@@ -60,7 +60,7 @@
                     <button class = "button" id="choose-playlist-button">Choose Playlist</button>
 
                 </div>
-                
+
                 <hr>
 
                 <!-- -------------home---------------- -->
@@ -71,31 +71,26 @@
                 <!-- --------Playlist before search------ -->
 
                 <div id = "playlist-before">
-                    <input type = "text" id = "search-artist-input"/>
-                    <button class = "button" id="search-artist">Search by Artist</button>
-
-
-                    <br>
-
-                    <input type = "text" id = "search-song-input"/>
-                    <button class = "button" id="search-song">Search by Song</button>
+                    <input type = "text" id = "search-input"/>
+                    <select id = "search-select">
+                        <option value="artist">Artist</option>
+                        <option value="track">Song</option>
+                    </select>
+                    <button class = "button" id="search-button">Search</button>
 
                     <br>
 
-                    <div id="artist">    
-                    </div>
-
-                    <div id="song">    
+                    <div id="items">    
                     </div>
 
                 </div>
-                    <!-- --------Playlist after search------ -->
+                <!-- --------Playlist after search------ -->
 
                 <div id = "playlist-after">
 
                 </div>
 
-                
+
             </div>
         </main>
 
@@ -108,7 +103,7 @@
     </body>
 
     <!-- ----------------Templates------------------ -->
-<script id="user-profile-template" type="text/x-handlebars-template">
+    <script id="user-profile-template" type="text/x-handlebars-template">
 
 <div class="media">
     <table>
@@ -124,27 +119,26 @@
             <td>Email: </td>
             <td>{{email}}</td>
         </tr>
-    </table>
+        </table>
 
-</div>
+        </div>
+    </script>
+
+
+<script id="artist-template" type="text/x-handlebars-template">
+<tr>
+    <td>{{name}}</td>
+</tr>
 </script>
 
-
-    <script id="artist-template" type="text/x-handlebars-template">
-<h2>Artist Information</h2>
-<dl>
-    <dt>Artist name</dt><dd class="text-overflow">{{artists.items.0.name}}</dd>
-    <dt>id</dt><dd class="text-overflow">{{artists.items.0.id}}</dd>
-        </dl>
-    </script>
-
     <script id="song-template" type="text/x-handlebars-template">
-<h2>Song Information</h2>
-<dl>
-    <dt>Song name</dt><dd class="text-overflow">{{tracks.items.0.name}}</dd>
-    <dt>id</dt><dd class="text-overflow">{{tracks.items.0.id}}</dd>
-        </dl>
-    </script>
+<tr>
+    <td>{{name}}, </td>
+    <td>{{artists.0.name}}, </td>
+    <td>{{album.name}}</td>
+
+</tr>
+</script>
 
 </html>
 
@@ -175,17 +169,9 @@
             return hashParams;
         }
 
-        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-            userProfileTemplate = Handlebars.compile(userProfileSource),
-            userProfilePlaceholder = document.getElementById('user-profile');
-
-        var artistSource = document.getElementById('artist-template').innerHTML,
-            artistTemplate = Handlebars.compile(artistSource),
-            artistPlaceholder = document.getElementById('artist');
-
-        var songSource = document.getElementById('song-template').innerHTML,
-            songTemplate = Handlebars.compile(songSource),
-            songPlaceholder = document.getElementById('song');
+        var userProfileSource = document.getElementById('user-profile-template').innerHTML;
+        var userProfileTemplate = Handlebars.compile(userProfileSource);
+        var userProfilePlaceholder = document.getElementById('user-profile');
 
         var params = getHashParams();
 
@@ -237,39 +223,75 @@
                 $('#home').hide();
                 $('#playlist-before').show();
             }, false);
-            
-            document.getElementById('search-artist').addEventListener('click', function() {
-                var searchRaw = document.getElementById("search-artist-input").value;
+
+            document.getElementById('search-button').addEventListener('click', function() {
+                var searchRaw = document.getElementById("search-input").value;
+                var searchType = document.getElementById("search-select");
+                var type = searchType.options[searchType.selectedIndex].value;
+                console.log(type);
                 var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
 
+                if(searchRaw === ""){
+                    console.log("Unable to search for \"nothing\"")
+                    document.getElementById("items").innerHTML = "";
+                    return;
+                }
+                else if(type != "artist" && type != "track"){
+                    console.log("Only able to search for artist or track")
+                    return;
+                }
 
                 $.ajax({
-                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type=artist',
+                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type='+ type,
                     headers: {
                         'Authorization': 'Bearer ' + access_token
                     },
                     success: function(response) {
-                        console.log(response);
-                        artistPlaceholder.innerHTML = artistTemplate(response);
+                                                    console.log(response);
 
-                    }
-                });
+                        if(type == "artist"){
+                            var size = Object.keys(response.artists.items).length;
+                            if(size>0){
+                                for(var i =0; i<size; i++){
+                                    var newElement = document.createElement('div');
+                                    newElement.id = "item"+i; 
+                                    newElement.className = "item";
+                                    document.getElementById("items").appendChild(newElement);
+                                    var source = document.getElementById('artist-template').innerHTML;
+                                    var template = Handlebars.compile(source);
+                                    var placeholder = document.getElementById('item'+i);
 
-            }, false);
+                                    placeholder.innerHTML = template(response.artists.items[i]);
+                                }
+                            }
+                            else{
+                                //ERROR message - artist not found
+                                console.log("Artist not found");
+                                document.getElementById("items").innerHTML = "";
+                            }
+                        }
+                        else if(type == "track"){
+                            var size = Object.keys(response.tracks.items).length;
+                            if(size>0){
+                                for(var i =0; i<size; i++){
+                                    var newElement = document.createElement('div');
+                                    newElement.id = "item"+i; 
+                                    newElement.className = "item";
+                                    document.getElementById("items").appendChild(newElement);
+                                    var source = document.getElementById('song-template').innerHTML;
+                                    var template = Handlebars.compile(source);
+                                    var placeholder = document.getElementById('item'+i);
 
-            document.getElementById('search-song').addEventListener('click', function() {
-                var searchRaw = document.getElementById("search-song-input").value;
-                var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
+                                    placeholder.innerHTML = template(response.tracks.items[i]);
+                                }
+                            }
+                            else{
+                                //ERROR message - artist not found
+                                console.log("Song not found");
+                                document.getElementById("items").innerHTML = "";
+                            }
+                        }
 
-
-                $.ajax({
-                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type=track',
-                    headers: {
-                        'Authorization': 'Bearer ' + access_token
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        songPlaceholder.innerHTML = songTemplate(response);
                     }
                 });
 
