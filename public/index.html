@@ -7,7 +7,7 @@
         <title>Spotify Group Playlist Creator</title>
 
         <style type="text/css">
-            #login, #loggedin {
+            #login, #loggedin, #playlist-before, #playlist-after  {
                 display: none;
             }
             .text-overflow {
@@ -38,7 +38,7 @@
 
         <main>
 
-            <!-- --------------Login--------------- -->
+            <!-- --------------Logged out--------------- -->
 
             <div id="login">
 
@@ -47,36 +47,49 @@
 
             </div>
 
-            <!-- -------------Main Section---------------- -->
+            <!-- -------------Logged in---------------- -->
 
             <div id="loggedin">
-
+                <!-- Add search bar for playlists -->
                 <div id="user-profile">
                 </div>
 
-                <div id="oauth">
+                <div id = "choose-playlist">
+
+                    <input type = "text" id = "choose-playlist-input"/>
+                    <button class = "button" id="choose-playlist-button">Choose Playlist</button>
+
                 </div>
 
-                <button class="button" id="obtain-new-token">Obtain new token using the refresh token
-                </button>
+                <hr>
 
-                <br>
+                <!-- -------------home---------------- -->
 
-                <input type = "text" id = "search-artist-input"/>
-                <button class = "button" id="search-artist">Search by Artist</button>
+                <div id = "home">
+                    Something is working I hope
+                </div>
+                <!-- --------Playlist before search------ -->
 
-                <br>
+                <div id = "playlist-before">
+                    <input type = "text" id = "search-input"/>
+                    <select id = "search-select">
+                        <option value="artist">Artist</option>
+                        <option value="track">Song</option>
+                    </select>
+                    <button class = "button" id="search-button">Search</button>
 
-                <input type = "text" id = "search-song-input"/>
-                <button class = "button" id="search-song">Search by Song</button>
+                    <br>
 
-                <br>
+                    <div id="items">    
+                    </div>
 
-                <div id="artist">    
+                </div>
+                <!-- --------Playlist after search------ -->
+
+                <div id = "playlist-after">
+
                 </div>
 
-                <div id="song">    
-                </div>
 
             </div>
         </main>
@@ -88,181 +101,201 @@
         </footer>
 
     </body>
-    
-        <!-- ----------------Templates------------------ -->
+
+    <!-- ----------------Templates------------------ -->
     <script id="user-profile-template" type="text/x-handlebars-template">
-<h1>Logged in as {{display_name}}</h1>
+
 <div class="media">
-    <div class="media-image">
-        <img class="media-object" width="150" src="{{images.0.url}}" />
-        </div>
-    <div class="media-body">
-        <dl>
-            <dt>Id</dt><dd>{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-        </dl>
-        </div>
+    <table>
+        <tr>
+            <td><img class="media-object" width="150px" src="{{images.0.url}}" /></td>                
+            <td><h1>Logged in as {{display_name}}</h1></td>
+        </tr>
+        <tr>
+            <td>Id: </td>
+            <td>{{id}}</td>
+        </tr>
+        <tr>
+            <td>Email: </td>
+            <td>{{email}}</td>
+        </tr>
+        </table>
+
         </div>
     </script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
-<h2>oAuth info</h2>
-<dl>
-    <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-    <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
-        </dl>
-    </script>
 
-    <script id="artist-template" type="text/x-handlebars-template">
-<h2>Artist Information</h2>
-<dl>
-    <dt>Artist name</dt><dd class="text-overflow">{{artists.items.0.name}}</dd>
-    <dt>id</dt><dd class="text-overflow">{{artists.items.0.id}}</dd>
-        </dl>
-    </script>
+<script id="artist-template" type="text/x-handlebars-template">
+<tr>
+    <td>{{name}}</td>
+</tr>
+</script>
 
     <script id="song-template" type="text/x-handlebars-template">
-<h2>Song Information</h2>
-<dl>
-    <dt>Song name</dt><dd class="text-overflow">{{tracks.items.0.name}}</dd>
-    <dt>id</dt><dd class="text-overflow">{{tracks.items.0.id}}</dd>
-        </dl>
-    </script>
+<tr>
+    <td>{{name}}, </td>
+    <td>{{artists.0.name}}, </td>
+    <td>{{album.name}}</td>
+
+</tr>
+</script>
 
 </html>
-    
-    
-    <!-- ------------Handlebar/jquery Scripts------------------ -->
 
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js">
-    </script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<!-- ------------Handlebar/jquery Scripts------------------ -->
 
-    
-    <!-- ----------------Main Script------------------ -->
-    <script>
-        (function() {
 
-            /**
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js">
+</script>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+
+<!-- ----------------Main Script------------------ -->
+<script>
+    (function() {
+
+        /**
          * Obtains parameters from the hash of the URL
          * @return Object
          */
-            function getHashParams() {
-                var hashParams = {};
-                var e, r = /([^&;=]+)=?([^&;]*)/g,
-                    q = window.location.hash.substring(1);
-                while ( e = r.exec(q)) {
-                    hashParams[e[1]] = decodeURIComponent(e[2]);
-                }
-                return hashParams;
+        function getHashParams() {
+            var hashParams = {};
+            var e, r = /([^&;=]+)=?([^&;]*)/g,
+                q = window.location.hash.substring(1);
+            while ( e = r.exec(q)) {
+                hashParams[e[1]] = decodeURIComponent(e[2]);
+            }
+            return hashParams;
+        }
+
+        var userProfileSource = document.getElementById('user-profile-template').innerHTML;
+        var userProfileTemplate = Handlebars.compile(userProfileSource);
+        var userProfilePlaceholder = document.getElementById('user-profile');
+
+        var params = getHashParams();
+
+        var access_token = params.access_token,
+            refresh_token = params.refresh_token,
+            error = params.error;
+
+        if (error) {
+            alert('There was an error during the authentication');
+        } else {
+            if (access_token) {
+
+                $.ajax({
+                    url: 'https://api.spotify.com/v1/me',
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token
+                    },
+                    success: function(response) {
+                        userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+
+                        console.log(response);
+
+                        $('#login').hide();
+                        $('#loggedin').show();
+                    }
+                });
+            } else {
+                // render initial screen
+                $('#login').show();
+                $('#loggedin').hide();
             }
 
-            var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-                userProfileTemplate = Handlebars.compile(userProfileSource),
-                userProfilePlaceholder = document.getElementById('user-profile');
-
-            var oauthSource = document.getElementById('oauth-template').innerHTML,
-                oauthTemplate = Handlebars.compile(oauthSource),
-                oauthPlaceholder = document.getElementById('oauth');
-
-            var artistSource = document.getElementById('artist-template').innerHTML,
-                artistTemplate = Handlebars.compile(artistSource),
-                artistPlaceholder = document.getElementById('artist');
-
-            var songSource = document.getElementById('song-template').innerHTML,
-                songTemplate = Handlebars.compile(songSource),
-                songPlaceholder = document.getElementById('song');
-
-            var params = getHashParams();
-
-            var access_token = params.access_token,
-                refresh_token = params.refresh_token,
-                error = params.error;
-
-            if (error) {
-                alert('There was an error during the authentication');
-            } else {
-                if (access_token) {
-                    // render oauth info
+            /*document.getElementById('obtain-new-token').addEventListener('click', function() {
+                $.ajax({
+                    url: '/refresh_token',
+                    data: {
+                        'refresh_token': refresh_token
+                    }
+                }).done(function(data) {
+                    access_token = data.access_token;
                     oauthPlaceholder.innerHTML = oauthTemplate({
                         access_token: access_token,
                         refresh_token: refresh_token
                     });
+                });
+            }, false);*/
 
-                    $.ajax({
-                        url: 'https://api.spotify.com/v1/me',
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token
-                        },
-                        success: function(response) {
-                            userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+            document.getElementById('choose-playlist-button').addEventListener('click', function() {
+                $('#home').hide();
+                $('#playlist-before').show();
+            }, false);
 
-                            console.log(response);
+            document.getElementById('search-button').addEventListener('click', function() {
+                var searchRaw = document.getElementById("search-input").value;
+                var searchType = document.getElementById("search-select");
+                var type = searchType.options[searchType.selectedIndex].value;
+                console.log(type);
+                var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
 
-                            $('#login').hide();
-                            $('#loggedin').show();
-                        }
-                    });
-                } else {
-                    // render initial screen
-                    $('#login').show();
-                    $('#loggedin').hide();
+                if(searchRaw === ""){
+                    console.log("Unable to search for \"nothing\"")
+                    document.getElementById("items").innerHTML = "";
+                    return;
+                }
+                else if(type != "artist" && type != "track"){
+                    console.log("Only able to search for artist or track")
+                    return;
                 }
 
-                document.getElementById('obtain-new-token').addEventListener('click', function() {
-                    $.ajax({
-                        url: '/refresh_token',
-                        data: {
-                            'refresh_token': refresh_token
+                $.ajax({
+                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type='+ type,
+                    headers: {
+                        'Authorization': 'Bearer ' + access_token
+                    },
+                    success: function(response) {
+                                                    console.log(response);
+
+                        if(type == "artist"){
+                            var size = Object.keys(response.artists.items).length;
+                            if(size>0){
+                                for(var i =0; i<size; i++){
+                                    var newElement = document.createElement('div');
+                                    newElement.id = "item"+i; 
+                                    newElement.className = "item";
+                                    document.getElementById("items").appendChild(newElement);
+                                    var source = document.getElementById('artist-template').innerHTML;
+                                    var template = Handlebars.compile(source);
+                                    var placeholder = document.getElementById('item'+i);
+
+                                    placeholder.innerHTML = template(response.artists.items[i]);
+                                }
+                            }
+                            else{
+                                //ERROR message - artist not found
+                                console.log("Artist not found");
+                                document.getElementById("items").innerHTML = "";
+                            }
                         }
-                    }).done(function(data) {
-                        access_token = data.access_token;
-                        oauthPlaceholder.innerHTML = oauthTemplate({
-                            access_token: access_token,
-                            refresh_token: refresh_token
-                        });
-                    });
-                }, false);
+                        else if(type == "track"){
+                            var size = Object.keys(response.tracks.items).length;
+                            if(size>0){
+                                for(var i =0; i<size; i++){
+                                    var newElement = document.createElement('div');
+                                    newElement.id = "item"+i; 
+                                    newElement.className = "item";
+                                    document.getElementById("items").appendChild(newElement);
+                                    var source = document.getElementById('song-template').innerHTML;
+                                    var template = Handlebars.compile(source);
+                                    var placeholder = document.getElementById('item'+i);
 
-                document.getElementById('search-artist').addEventListener('click', function() {
-                    var searchRaw = document.getElementById("search-artist-input").value;
-                    var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
-
-
-                    $.ajax({
-                        url: 'https://api.spotify.com/v1/search?q=' + search + '&type=artist',
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            artistPlaceholder.innerHTML = artistTemplate(response);
-
+                                    placeholder.innerHTML = template(response.tracks.items[i]);
+                                }
+                            }
+                            else{
+                                //ERROR message - artist not found
+                                console.log("Song not found");
+                                document.getElementById("items").innerHTML = "";
+                            }
                         }
-                    });
 
-                }, false);
+                    }
+                });
 
-                document.getElementById('search-song').addEventListener('click', function() {
-                    var searchRaw = document.getElementById("search-song-input").value;
-                    var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
-
-
-                    $.ajax({
-                        url: 'https://api.spotify.com/v1/search?q=' + search + '&type=track',
-                        headers: {
-                            'Authorization': 'Bearer ' + access_token
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            songPlaceholder.innerHTML = songTemplate(response);
-                        }
-                    });
-
-                }, false);
-            }
-        })();
-    </script>
+            }, false);
+        }
+    })();
+</script>
