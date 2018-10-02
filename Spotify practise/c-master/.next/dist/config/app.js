@@ -1,0 +1,6 @@
+'use strict';
+
+module.exports = {
+  HOST: 'http://localhost:3000/callback'
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbmZpZy9hcHAuanMiXSwibmFtZXMiOlsibW9kdWxlIiwiZXhwb3J0cyIsIkhPU1QiXSwibWFwcGluZ3MiOiI7O0FBQUEsT0FBQSxBQUFPO1FBQVAsQUFBaUIsQUFDVDtBQURTLEFBQ2YiLCJmaWxlIjoiYXBwLmpzIiwic291cmNlUm9vdCI6Ii9Vc2Vycy9NaXRjaGVsbFMvTGlicmFyeS9Nb2JpbGUgRG9jdW1lbnRzL2NvbX5hcHBsZX5DbG91ZERvY3MvUk1JVC9TZW0yL0Nsb3VkIENvbXB1dGluZy9Bc3MyL1Nwb3RpZnkgcHJhY3Rpc2UvYy1tYXN0ZXIifQ==
