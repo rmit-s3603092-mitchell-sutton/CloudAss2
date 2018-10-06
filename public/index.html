@@ -47,36 +47,34 @@
                 <!-- -------------home---------------- -->
 
                 <div id = "home">
-                    Something is working I hope
-                </div>
-                <!-- --------Playlist before search------ -->
 
-                <div id = "playlist-before">
-                    <input type = "text" id = "search-input"/>
-                    
-                    <button class = "btn" id="search-button">Search</button>
-
-                    <br>
-                    <select id = "search-select">
-                        <option value="track">Song</option>
-                        <option value="artist">Artist</option>
-                    </select>
-
-                </div>
-                <!-- --------Playlist after search------ -->
-
-                <div id = "playlist-after">
-
+                    <div id = "back-to-search">
+                        <button id = "back-to-search-btn">Back to search</button>
+                    </div>
                     <table style = "width: 100%; table-layout: fixed;">
                         <tr>
-                            <td style = "width: 100%;"> 
+                            <!-- --------Playlist before search------ -->
+
+                            <td id = "search-before" style = "width: 100%;">
+                                <h1>Search:</h1>
+                                <input type = "text" id = "search-input"/>
+                                <button class = "btn" id="search-button">Search</button>
+                                <br>
+                                <select id = "search-select">
+                                    <option value="track">Song</option>
+                                    <option value="artist">Artist</option>
+                                </select>
+                            </td> 
+                            <!-- --------Playlist after search------ -->
+
+                            <td id = "search-after" style = "width: 100%;"> 
                                 <h1>Search result</h1>
                                 <h2 id = "search-value"></h2>
                                 <select id="search-items" size = "20" style = "width: 100%;">    
 
                                 </select>
                             </td>                
-                            <td style = "width: 100%;">
+                            <td id = "playlist" style = "width: 100%;">
                                 <h1>Playlist</h1>
                                 <h2>temporary playlist name</h2>
                                 <select id="playlist-items" size = "20" style = "width: 100%;">    
@@ -130,12 +128,12 @@
         </tr>
     </script>
 
-<script id="song-template" type="text/x-handlebars-template">
+    <script id="song-template" type="text/x-handlebars-template">
 <tr>
     <td>{{name}}, </td>
     <td>{{artists.0.name}}, </td>        
-</tr>
-</script>
+        </tr>
+    </script>
 
 </html>
 
@@ -193,6 +191,8 @@
 
                         $('#login').hide();
                         $('#loggedin').show();
+                        $('#home').hide();
+
                     }
                 });
             } else {
@@ -217,8 +217,17 @@
             }, false);*/
 
             document.getElementById('choose-playlist-button').addEventListener('click', function() {
-                $('#home').hide();
-                $('#playlist-before').show();
+                $('#home').show();
+                $('#search-before').show();
+                $('#search-after').hide();
+                $('#back-to-search').hide();
+                $('#playlist').show();
+
+            }, false);
+            document.getElementById('back-to-search-btn').addEventListener('click', function() {
+                $('#search-before').show();
+                $('#search-after').hide();
+                $('#back-to-search').hide();
             }, false);
 
             document.getElementById('search-button').addEventListener('click', function() {
@@ -245,9 +254,10 @@
                     },
                     success: function(response) {
                         console.log(response);
-                        $('#playlist-before').hide();
-                        $('#playlist-after').show();
-                        
+                        $('#search-before').hide();
+                        $('#search-after').show();
+                        $('#back-to-search').show();
+
                         document.getElementById("search-value").innerHTML =  searchRaw;
 
                         if(type == "artist"){
