@@ -60,10 +60,6 @@
                                 <input type = "text" id = "search-input"/>
                                 <button class = "btn" id="search-button">Search</button>
                                 <br>
-                                <select id = "search-select">
-                                    <option value="track">Song</option>
-                                    <option value="artist">Artist</option>
-                                </select>
                             </td> 
                             <!-- --------Playlist after search------ -->
 
@@ -232,9 +228,6 @@
 
             document.getElementById('search-button').addEventListener('click', function() {
                 var searchRaw = document.getElementById("search-input").value;
-                var searchType = document.getElementById("search-select");
-                var type = searchType.options[searchType.selectedIndex].value;
-                console.log(type);
                 var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
 
                 if(searchRaw === ""){
@@ -242,13 +235,9 @@
                     document.getElementById("search-items").innerHTML = "";
                     return;
                 }
-                else if(type != "artist" && type != "track"){
-                    console.log("Only able to search for artist or track")
-                    return;
-                }
 
                 $.ajax({
-                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type='+ type,
+                    url: 'https://api.spotify.com/v1/search?q=' + search + '&type=track',
                     headers: {
                         'Authorization': 'Bearer ' + access_token
                     },
@@ -260,32 +249,7 @@
 
                         document.getElementById("search-value").innerHTML =  searchRaw;
 
-                        if(type == "artist"){
-                            var size = Object.keys(response.artists.items).length;
-                            if(size>0){
-                                for(var i =0; i<size; i++){
-                                    var newElement = document.createElement('option');
-
-                                    newElement.id = "search-item"+i; 
-                                    newElement.className = "search-item";
-                                    if(i%2 == 0){
-                                        newElement.setAttribute("style", "background: #DADADA;");
-                                    }
-                                    document.getElementById("search-items").appendChild(newElement);
-                                    var source = document.getElementById('artist-template').innerHTML;
-                                    var template = Handlebars.compile(source);
-                                    var placeholder = document.getElementById('search-item'+i);
-
-                                    placeholder.innerHTML = template(response.artists.items[i]);
-                                }
-                            }
-                            else{
-                                //ERROR message - artist not found
-                                console.log("Artist not found");
-                                document.getElementById("search-items").innerHTML = "";
-                            }
-                        }
-                        else if(type == "track"){
+                        if(type == "track"){
                             var size = Object.keys(response.tracks.items).length;
                             if(size>0){
                                 for(var i =0; i<size; i++){
