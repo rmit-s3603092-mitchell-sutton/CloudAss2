@@ -1,0 +1,29 @@
+{
+  "name": "clouda2",
+  "version": "1.0.0",
+  "description": "Our super cool cloud assignment",
+  "main": "app.js",
+  "dependencies": {
+	"express": "4.16.3",
+	"request": "2.83.0",
+	"cors": "2.8.4",
+	"querystring": "0.2.0",
+	"cookie-parser": "1.3.2"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmit-s3603092-mitchell-sutton/CloudAss2.git"
+  },
+  "author": "Jack Moloney & Mitchell Sutton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmit-s3603092-mitchell-sutton/CloudAss2/issues"
+  },
+  "homepage": "https://github.com/rmit-s3603092-mitchell-sutton/CloudAss2#readme"
+}
