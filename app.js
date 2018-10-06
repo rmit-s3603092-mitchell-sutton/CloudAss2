@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 
 var client_id = '813e26a9d8844b21b2d458e7c8792a0a'; // Your client id
 var client_secret = '5b92a60d078442dba46089f1d0756543'; // Your secret
-//var redirect_uri = 'http://localhost:8080/callback'; // Your redirect uri
+//var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 var redirect_uri = 'http://testa2-218409.appspot.com/callback';
 
 var generateRandomString = function(length) {
@@ -132,3 +132,5 @@ app.get('/refresh_token', function(req, res) {
 
 console.log('Listening on 8080');
 app.listen(8080);
+//app.listen(8888);
+
