@@ -12,10 +12,6 @@ var redirect_uri = 'http://clouda2jm.appspot.com/callback';
 
 /* ---------- SPOTIFY ---------------*/
 
-const firebase = require("firebase");
-// Required for side-effects
-require("firebase/firestore");
-
 var generateRandomString = function(length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
