@@ -40,6 +40,7 @@
                     <ul>
                         <li><input type = "text" id = "choose-playlist-input"/></li>
                         <li><button class = "btn" id="choose-playlist-button">Choose Playlist</button></li>
+                        <p id = "song-return"></p>
                         <li style = "float: right;"><button class = "btn" id="create-playlist-button">Create Playlist</button></li>
                     </ul>
 
@@ -85,10 +86,10 @@
                     <button class = "btn">Add Song</button>
 
                 </div>
-                
+
                 <div id = "create-playlist">
-                
-                
+
+
                 </div>
 
 
@@ -106,6 +107,7 @@
     <!-- ----------------Templates------------------ -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js">
     </script>
+
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -140,6 +142,53 @@
 
 
 <!-- ----------------Main Script------------------ -->
+
+/* ---------- FIREBASE ---------------*/
+
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyA-KjQUMkefMJcThHIHCg5bBHy_fWuBfj8",
+        authDomain: "clouda2jm.firebaseapp.com",
+        databaseURL: "https://clouda2jm.firebaseio.com",
+        projectId: "clouda2jm",
+        storageBucket: "clouda2jm.appspot.com",
+        messagingSenderId: "548327908086"
+    };
+    firebase.initializeApp(config);
+
+    var db = firebase.firestore();
+
+
+
+    var playlist = document.getElementById("choose-playlist-input");
+    var choosePlaylist = document.getElementById("choose-playlist-button");
+    var song = document.getElementById("song-return");
+
+    choosePlaylist.addEventListener("click", function(){
+
+        var text = playlist.value;
+
+        db.collection("playlist").add({
+            creatorID: "1h3g47321b",
+            name: text,
+            songs: [{
+                song: "Song 2",
+                artist: "Blur",
+                id: "123ghuf7832vi"
+            }]
+        })
+            .then(function(docRef) {
+            console.log("Document written with ID: ", docRef.id);
+        })
+            .catch(function(error) {
+            console.error("Error adding document: ", error);
+        });
+
+    });
+</script>
 <script src = "js/main.js">
 
 </script>
