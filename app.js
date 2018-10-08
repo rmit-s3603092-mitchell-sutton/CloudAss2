@@ -9,6 +9,13 @@ var client_secret = '7510f95db92c46aa97cff409a249b534'; // Your secret
 //var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 var redirect_uri = 'http://clouda2jm.appspot.com/callback';
 
+
+/* ---------- SPOTIFY ---------------*/
+
+const firebase = require("firebase");
+// Required for side-effects
+require("firebase/firestore");
+
 var generateRandomString = function(length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -40,6 +40,7 @@
                     <ul>
                         <li><input type = "text" id = "choose-playlist-input"/></li>
                         <li><button class = "btn" id="choose-playlist-button">Choose Playlist</button></li>
+                        <p id = "song-return"></p>
                         <li style = "float: right;"><button class = "btn" id="create-playlist-button">Create Playlist</button></li>
                     </ul>
 
@@ -85,10 +86,10 @@
                     <button class = "btn">Add Song</button>
 
                 </div>
-                
+
                 <div id = "create-playlist">
-                
-                
+
+
                 </div>
 
 
@@ -106,6 +107,7 @@
     <!-- ----------------Templates------------------ -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js">
     </script>
+
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -140,6 +142,31 @@
 
 
 <!-- ----------------Main Script------------------ -->
+
+<script>
+    /* ---------- FIREBASE ---------------*/
+    firebase.initializeApp({
+        credential: admin.credential.applicationDefault()
+    });
+
+    var db = firebase.firestore();
+
+    const playlist = document.querySelector("#choose-playlist-input")
+    const choosePlaylist = document.querySelector("#choose-playlist-button");
+    const song = document.querySelector("#song-return");
+
+    choosePlaylist.addEventListener("click", function(){
+
+        const text = playlist.value;
+        const docref = db.doc("playlist/"+ text);
+
+        if(docref && docref.exists){
+            const doc = docref.data();
+            song.innerText = doc.name;
+        }
+
+    });
+</script>
 <script src = "js/main.js">
 
 </script>
