@@ -17,23 +17,12 @@ var db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
-    /*if(user){
-        $('#auth').hide();
-        $('#home').show();
-        $('#back-to-search').hide();
-        $('#search-before').hide();
-        $('#search-after').hide();
-        $('#playlist').hide();
-        $('#create-playlist').hide();
+    if(user){
+        showLoggedIn();
     }
     else {
-        $('#auth').show();
-        $('#initialPage').show();
-        $('#loginPage').hide();
-        $('#signupPage').hide();
-        $('#loggedin').hide();
-        $('#createPlaylist').hide();
-    }*/
+        showInitial();
+    }
 });
 
 var playlist = document.getElementById("choose-playlist-input");
