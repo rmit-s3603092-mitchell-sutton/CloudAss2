@@ -4,20 +4,22 @@
     box-sizing: border-box;
 }
 h1{
-    font-size: 50px;
+    font-size: 40px;
+	font-family: arial;
 }
 
 body {
-    font-family: Arial;
     margin: 0px;
-    background: #759FBC;
+    background: #2d2d2d;
 }
 
 /* Header */
 header {
-    padding: 30px;
+    padding: 20px;
     text-align: center;
-    background: white;
+    background: #2d2d2d;
+	color: white;
+	font-size: 50px;
 }
 
 
@@ -44,6 +46,7 @@ main{
 .panel-heading{
 
 }
+
 .panel-body{
     width:100%;
     position: relative;
@@ -80,8 +83,8 @@ input.input {
 .button {
     text-align: center;
     flex-wrap: wrap;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
     align-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -94,7 +97,7 @@ input.input {
     padding: 0 20px;
     min-width: 160px;
     height: 50px;
-    background-color: #ffb997;
+    background-color: #12b538;
     border-radius: 25px;
 
     font-size: 16px;
@@ -109,7 +112,8 @@ input.input {
 
 /* Footer */
 footer {
-    background-color: white;
+    background-color: #2d2d2d;
+	color: white;
     padding: 25px;
     text-align: center;
 }
@@ -134,6 +138,10 @@ td, th {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+}
+
+#create-playlist {
+	align: center;
 }
 
 
