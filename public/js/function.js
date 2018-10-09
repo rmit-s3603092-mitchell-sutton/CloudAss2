@@ -1,3 +1,6 @@
+document.getElementById('loginBtn').addEventListener('click', function() {
+   logIn();
+}, false);
 document.getElementById('choose-playlist-button').addEventListener('click', function() {
     $('#home').show();
     $('#search-before').show();
@@ -25,3 +28,17 @@ document.getElementById('search-button').addEventListener('click', function() {
 document.getElementById("choose-playlist-button").addEventListener("click", function(){
     choosePlaylist();
 });
+
+document.getElementById("choose-playlist-button").addEventListener("click", function(){
+    choosePlaylist();
+});
+document.getElementById("signupInsteadBtn").addEventListener("click", function(){
+    $('#signupInsteadBtn').hide();
+    $('#passwordConf').show();
+    $('#signupBtn').show();
+});
+document.getElementById("signupBtn").addEventListener("click", function(){
+   signUp();
+});
+
+

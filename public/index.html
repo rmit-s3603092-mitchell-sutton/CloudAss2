@@ -21,10 +21,20 @@
 
             <!-- --------------Logged out--------------- -->
 
+            <div id="loader"></div>
+
             <div id="login">
 
                 <h1>This is an example of the Authorization Code flow</h1>
-                <a href="/login" class="btn button">Log in with Spotify</a>
+                <input type = 'text' id = 'emailIn' placeholder = "Email">
+                <input type = 'password' id = 'passwordIn' placeholder = "Password">
+                <input type = 'password' id = 'passwordConf' placeholder = "Password">
+
+                <a id = 'loginBtn' class="btn button">Log in</a>
+                <a id = 'signupBtn' class="btn button">Sign up</a>
+                <a id = 'signupInsteadBtn' class="btn button">Did you want to signup instead?</a>
+                <div id = "alert" class="alert">
+                </div>
 
             </div>
 
@@ -88,7 +98,7 @@
 
                 <div id = "create-playlist">
                     <h1>Create Playlist:</h1>
-                    <input type = "text" id = "playlist-name"/>
+                    <input type = "text" id = "create-playlist-name"/>
                     <button class = "btn" id="create-playlist-button">Search</button>
                     <br>
 
@@ -144,8 +154,6 @@
 
 
 <!-- ----------------Main Script------------------ -->
-
-/* ---------- FIREBASE ---------------*/
 
 <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
