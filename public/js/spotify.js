@@ -37,6 +37,10 @@ if (error) {
                 $('#loggedin').show();
                 $('#home').hide();
                 $('#create-playlist').hide();
+                $('#passwordConf').hide();
+                $('#signupBtn').hide();
+
+                
 
             }
         });
