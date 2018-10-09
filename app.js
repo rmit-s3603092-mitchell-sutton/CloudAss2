@@ -1,6 +1,5 @@
 var express = require('express'); // Express web server
-require('dotenv').config()
-framework
+require('dotenv').config();
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
