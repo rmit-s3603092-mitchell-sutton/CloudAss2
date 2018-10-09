@@ -22,6 +22,9 @@ header {
 	font-size: 50px;
 }
 
+/*#auth, #home, #initialPage, #loginPage, #signupPage, #loggedin, #createPlaylist, #back-to-search, #search-before, #search-after, #playlist, #create-playlist{
+    display: none;
+}*/
 
 .text-overflow {
     overflow: hidden;
