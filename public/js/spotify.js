@@ -48,6 +48,8 @@ if (error) {
         // render initial screen
         $('#login').show();
         $('#loggedin').hide();
+        $('#passwordConf').hide();
+        $('#signupBtn').hide();
     }
 
     /*document.getElementById('obtain-new-token').addEventListener('click', function() {

@@ -19,20 +19,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
     if(user){
         console.log("State Changed and is user");
-        document.location.href = "/login";
     }
 });
-
-var config = {
-    apiKey: "AIzaSyDT39yc7LcWqwDWOokrz0xSN12PEGtVG9U",
-    authDomain: "bigger-bits.firebaseapp.com",
-    databaseURL: "https://bigger-bits.firebaseio.com",
-    projectId: "bigger-bits",
-    storageBucket: "bigger-bits.appspot.com",
-    messagingSenderId: "811061580391"
-};
-firebase.initializeApp(config);
-var db = firebase.firestore();
 
 var playlist = document.getElementById("choose-playlist-input");
 
@@ -55,6 +43,7 @@ function choosePlaylist(){
         console.error("Error adding document: ", error);
     });
 }
+
 function logIn() {
     if (firebase.auth().currentUser) {
         // [START signout]
@@ -82,7 +71,9 @@ function logIn() {
         // [START authwithemail]
 
         showLoader();
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+            document.location.href = "/login";
+        }).catch(function(error) {
             // Handle Errors here.
             hideLoader();
             var errorCode = error.code;
@@ -139,7 +130,9 @@ function signUp() {
         // Sign in with email and pass.
         // [START createwithemail]
         showLoader();
-        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+            document.location.href = "/login";
+        }).catch(function(error) {
             hideLoader();
             // Handle Errors here.
             var errorCode = error.code;
