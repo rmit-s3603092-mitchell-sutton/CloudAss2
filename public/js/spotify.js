@@ -21,37 +21,14 @@ var access_token = params.access_token,
 if (error) {
     alert('There was an error during the authentication');
 } else {
-    if (access_token) {
 
-        $.ajax({
-            url: 'https://api.spotify.com/v1/me',
-            headers: {
-                'Authorization': 'Bearer ' + access_token
-            },
-            success: function(response) {
-                userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-
-                console.log(response);
-
-                $('#login').hide();
-                $('#loggedin').show();
-                $('#home').hide();
-                $('#create-playlist').hide();
-                $('#passwordConf').hide();
-                $('#signupBtn').hide();
-
-                
-
-            }
-        });
-    } else {
-        // render initial screen
-        $('#login').show();
-        $('#loggedin').hide();
-        $('#passwordConf').hide();
-        $('#signupBtn').hide();
+    function checkAccess(){
+        if (access_token) {
+            return true;
+        } else {   
+            return false;
+        }
     }
-
     /*document.getElementById('obtain-new-token').addEventListener('click', function() {
                 $.ajax({
                     url: '/refresh_token',

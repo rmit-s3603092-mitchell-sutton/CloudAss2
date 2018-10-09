@@ -22,18 +22,29 @@
 
             <div id="loader"></div>
 
-            <div id="login">
+            <div id="auth">
 
-
-                <h1>Login or Signup</h1>
-
-                <input type = 'text' id = 'emailIn' placeholder = "Email">
-                <input type = 'password' id = 'passwordIn' placeholder = "Password">
-                <input type = 'password' id = 'passwordConf' placeholder = "Password">
-
-                <a id = 'loginBtn' class="btn button">Log in</a>
-                <a id = 'signupBtn' class="btn button">Sign up</a>
-                <a id = 'signupInsteadBtn' class="btn button">Did you want to signup instead?</a>
+                <div id = 'initialPage'>
+                    <button id = 'goToLogin' class="btn button">Log in</button >
+                    <br>
+                    <button  id = 'goToSignup' class="btn button">Sign up</button >
+                </div>
+                <div id = "loginPage">
+                    <input type = 'text' id = 'loginEmail' placeholder = "Email">
+                    <br>
+                    <input type = 'password' id = 'loginPassword' placeholder = "Password">
+                    <br>
+                    <button  id = 'loginBtn' class="btn button">Log in</button >
+                </div>
+                <div id = "signupPage">
+                    <input type = 'text' id = 'signupEmail' placeholder = "Email">
+                    <br>
+                    <input type = 'password' id = 'signupPassword' placeholder = "Password">
+                    <br>
+                    <input type = 'password' id = 'signupConfirm' placeholder = "Confirm">
+                    <br>
+                    <button  id = 'signupBtn' class="btn button">Log in</button >
+                </div>
                 <div id = "alert" class="alert">
                 </div>
 
@@ -52,6 +63,7 @@
                         <li><input type = "text" id = "choose-playlist-input"/></li>
                         <li><button class = "btn" id="choose-playlist-button">Choose Playlist</button></li>
                         <li style = "float: right;"><button class = "btn" id="create-playlist-button">Create Playlist</button></li>
+                        <li style = "float: right;"><button class = "btn" id="signout">Signout</button></li>
                     </ul>
 
                 </div>
