@@ -36,6 +36,7 @@ if (error) {
                 $('#login').hide();
                 $('#loggedin').show();
                 $('#home').hide();
+                $('#create-playlist').hide();
 
             }
         });
@@ -60,21 +61,7 @@ if (error) {
                 });
             }, false);*/
 
-    document.getElementById('choose-playlist-button').addEventListener('click', function() {
-        $('#home').show();
-        $('#search-before').show();
-        $('#search-after').hide();
-        $('#back-to-search').hide();
-        $('#playlist').show();
-
-    }, false);
-    document.getElementById('back-to-search-btn').addEventListener('click', function() {
-        $('#search-before').show();
-        $('#search-after').hide();
-        $('#back-to-search').hide();
-    }, false);
-
-    document.getElementById('search-button').addEventListener('click', function() {
+    function searchSong(){
         var searchRaw = document.getElementById("search-input").value;
         var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
 
@@ -125,5 +112,5 @@ if (error) {
             }
         });
 
-    }, false);
+    }
 }
