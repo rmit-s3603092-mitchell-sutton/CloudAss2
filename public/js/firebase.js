@@ -19,6 +19,23 @@ firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
     if(user){
         console.log("State Changed and is user");
+
+        $('#login').hide();
+        $('#loggedin').show();
+        $('#home').hide();
+        $('#create-playlist').hide();
+        $('#passwordConf').hide();
+        $('#signupBtn').hide();
+    }
+    else {
+        // render initial screen
+        $('#login').show();
+        $('#loggedin').hide();
+        $('#passwordConf').hide();
+        $('#signupBtn').hide();
+        document.location.href = "../";
+
+
     }
 });
 
@@ -73,6 +90,7 @@ function logIn() {
         showLoader();
         firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
             document.location.href = "/login";
+
         }).catch(function(error) {
             // Handle Errors here.
             hideLoader();

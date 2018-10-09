@@ -36,6 +36,7 @@ document.getElementById("signupInsteadBtn").addEventListener("click", function()
     $('#signupInsteadBtn').hide();
     $('#passwordConf').show();
     $('#signupBtn').show();
+    $('#loginBtn').hide();
 });
 document.getElementById("signupBtn").addEventListener("click", function(){
    signUp();

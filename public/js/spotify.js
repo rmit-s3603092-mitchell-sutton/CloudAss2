@@ -21,6 +21,9 @@ var access_token = params.access_token,
 if (error) {
     alert('There was an error during the authentication');
 } else {
+    
+    
+    /*
     if (access_token) {
 
         $.ajax({
@@ -39,9 +42,6 @@ if (error) {
                 $('#create-playlist').hide();
                 $('#passwordConf').hide();
                 $('#signupBtn').hide();
-
-                
-
             }
         });
     } else {
@@ -51,6 +51,7 @@ if (error) {
         $('#passwordConf').hide();
         $('#signupBtn').hide();
     }
+    */
 
     /*document.getElementById('obtain-new-token').addEventListener('click', function() {
                 $.ajax({
