@@ -24,6 +24,7 @@ function showSignup(){
 }
 function showLoggedIn(){
     $('#auth').hide();
+    $('#loggedin').show();
     $('#home').show();
     $('#back-to-search').hide();
     $('#search-before').hide();
@@ -33,6 +34,7 @@ function showLoggedIn(){
 }
 function showSearchBefore(){
     $('#auth').hide();
+    $('#loggedin').show();
     $('#home').show();
     $('#back-to-search').hide();
     $('#search-before').show();
@@ -42,6 +44,7 @@ function showSearchBefore(){
 }
 function showSearchAfter(){
     $('#auth').hide();
+    $('#loggedin').show();
     $('#home').show();
     $('#back-to-search').hide();
     $('#search-before').hide();
@@ -51,7 +54,8 @@ function showSearchAfter(){
 }
 function showCreatePlaylist(){
     $('#auth').hide();
-    $('#home').show();
+    $('#loggedin').show();
+    $('#home').hide();
     $('#back-to-search').hide();
     $('#search-before').hide();
     $('#search-after').hide();
@@ -72,12 +76,21 @@ document.getElementById('goToSignup').addEventListener('click', function() {
 }, false);
 document.getElementById('loginBtn').addEventListener('click', function() {
     if(logIn()){
+        console.log("Logged In");
         showLoggedIn();
+    }
+    else{
+        console.log("Log in failed");
     }
 }, false);
 document.getElementById("signupBtn").addEventListener("click", function(){
     if(signUp()){
+        console.log("Signed Up");
         showLoggedIn();
+    }
+    else{
+        console.log("Sign Up failed");
+
     }
 });
 document.getElementById('create-playlist').addEventListener('click', function(){

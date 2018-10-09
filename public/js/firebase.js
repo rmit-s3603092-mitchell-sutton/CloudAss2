@@ -17,7 +17,7 @@ var db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
-    if(user){
+    /*if(user){
         $('#auth').hide();
         $('#home').show();
         $('#back-to-search').hide();
@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         $('#signupPage').hide();
         $('#loggedin').hide();
         $('#createPlaylist').hide();
-    }
+    }*/
 });
 
 var playlist = document.getElementById("choose-playlist-input");
@@ -96,6 +96,8 @@ function logIn() {
 
     showLoader();
     firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+        hideLoader();
+
         return true;
 
     }).catch(function(error) {
@@ -159,6 +161,8 @@ function signUp() {
     // [START createwithemail]
     showLoader();
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+        hideLoader();
+
         return true;
     }).catch(function(error) {
         hideLoader();
