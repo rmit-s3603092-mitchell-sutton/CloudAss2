@@ -18,30 +18,37 @@ var db = firebase.firestore();
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
     if(user){
-        console.log("State Changed and is user");
-
-        $('#login').hide();
-        $('#loggedin').show();
-        $('#home').hide();
+        $('#auth').hide();
+        $('#home').show();
+        $('#back-to-search').hide();
+        $('#search-before').hide();
+        $('#search-after').hide();
+        $('#playlist').hide();
         $('#create-playlist').hide();
-        $('#passwordConf').hide();
-        $('#signupBtn').hide();
     }
     else {
-        // render initial screen
-        $('#login').show();
+        $('#auth').show();
+        $('#initialPage').show();
+        $('#loginPage').hide();
+        $('#signupPage').hide();
         $('#loggedin').hide();
-        $('#passwordConf').hide();
-        $('#signupBtn').hide();
-        document.location.href = "../";
-
-
+        $('#createPlaylist').hide();
     }
 });
 
 var playlist = document.getElementById("choose-playlist-input");
 
-function choosePlaylist(){
+function signout(){
+    firebase.auth().signOut()
+        .then(function() {
+        return true;
+    })
+        .catch(function(error) {
+        return false;
+    });
+}
+
+function createPlaylist(){
     var text = playlist.value;
 
     db.collection("playlist").add({
@@ -67,52 +74,53 @@ function logIn() {
         firebase.auth().signOut();
         console.log('someone was already signed in');
 
-    } else {
+    } 
 
-        var email = document.getElementById("emailIn").value;
-        var password = document.getElementById("passwordIn").value;
+    var email = document.getElementById("loginEmail").value;
+    var password = document.getElementById("loginPassword").value;
 
-        if (validateEmail(email) == false) {
-            var warning = "<strong>Invalid!</strong> Please enter a valid email address.";
-            setWarning(warning);
-            showWarning();
-            return;
-        }
-        if (password.length < 8) {
-            var warning = "<strong>Invalid!</strong> Please enter a valid password.";
-            setWarning(warning);
-            showWarning();
-            return;
-        }
-        // Sign in with email and pass.
-        // [START authwithemail]
-
-        showLoader();
-        firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-            document.location.href = "/login";
-
-        }).catch(function(error) {
-            // Handle Errors here.
-            hideLoader();
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // [START_EXCLUDE]
-            if (errorCode === 'auth/wrong-password') {
-                var warning = "<strong>Invalid!</strong> Password incorrect";
-                setWarning(warning);
-                showWarning();
-            } 
-            else if (errorCode == 'auth/user-not-found'){
-                var warning = "<strong>Invalid!</strong> User not found";
-                setWarning(warning);
-                showWarning();
-
-            }else {
-                alert(errorMessage);
-            }
-            console.log(error);
-        });
+    if (validateEmail(email) == false) {
+        var warning = "<strong>Invalid!</strong> Please enter a valid email address.";
+        setWarning(warning);
+        showWarning();
+        return false;
     }
+    if (password.length < 8) {
+        var warning = "<strong>Invalid!</strong> Please enter a valid password.";
+        setWarning(warning);
+        showWarning();
+        return false;
+    }
+    // Sign in with email and pass.
+    // [START authwithemail]
+
+    showLoader();
+    firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+        return true;
+
+    }).catch(function(error) {
+        // Handle Errors here.
+        hideLoader();
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/wrong-password') {
+            var warning = "<strong>Invalid!</strong> Password incorrect";
+            setWarning(warning);
+            showWarning();
+        } 
+        else if (errorCode == 'auth/user-not-found'){
+            var warning = "<strong>Invalid!</strong> User not found";
+            setWarning(warning);
+            showWarning();
+
+        }else {
+            alert(errorMessage);
+        }
+        console.log(error);
+        return false;
+    });
+
 
 }
 function signUp() {
@@ -121,57 +129,60 @@ function signUp() {
         // [START signout]
         firebase.auth().signOut();
         // [END signout]
+        console.log('someone was already signed in');
 
-    } else {
-        var email = document.getElementById('emailIn').value;
-        var password = document.getElementById('passwordIn').value;
-        var confirm = document.getElementById('passwordConf').value;
-        if (validateEmail(email) == false) {
-            var warning = "<strong>Invalid!</strong> Please enter a email.";
-            setWarning(warning);
-            showWarning();
-            return;
-        }
-        if (validatePassword(password) == false) {
-            var warning = "<strong>Invalid!</strong> Password must be longer than 7 characters and must contain both lowercase and uppercase letters, as well as a number."
-            setWarning(warning);
-            showWarning();
-            return;
-        }
-        if (password != confirm){
 
-            var warning = "<strong>Invalid!</strong> Passwords do not match."
-            setWarning(warning);
-            showWarning();
-            return;
-        }
-        // Sign in with email and pass.
-        // [START createwithemail]
-        showLoader();
-        firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
-            document.location.href = "/login";
-        }).catch(function(error) {
-            hideLoader();
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // [START_EXCLUDE]
-            if (errorCode == 'auth/weak-password') {
-                console.log('Javascript did not pick up this error');
-            } 
-            else if (errorCode == 'auth/email-already-in-use'){
-                var warning = "<strong>Invalid!</strong> User already exists"
-                setWarning(warning);
-                showWarning();
-            }else {
-                alert(errorMessage);
-            }
-            console.log(error);
-            // [END_EXCLUDE]
-        });
-        // [END createwithemail]
-
+    } 
+    var email = document.getElementById('signupEmail').value;
+    var password = document.getElementById('signupPassword').value;
+    var confirm = document.getElementById('signupConfirm').value;
+    if (validateEmail(email) == false) {
+        var warning = "<strong>Invalid!</strong> Please enter a email.";
+        setWarning(warning);
+        showWarning();
+        return false;
     }
+    if (validatePassword(password) == false) {
+        var warning = "<strong>Invalid!</strong> Password must be longer than 7 characters and must contain both lowercase and uppercase letters, as well as a number."
+        setWarning(warning);
+        showWarning();
+        return false;
+    }
+    if (password != confirm){
+
+        var warning = "<strong>Invalid!</strong> Passwords do not match."
+        setWarning(warning);
+        showWarning();
+        return false;
+    }
+    // Sign in with email and pass.
+    // [START createwithemail]
+    showLoader();
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+        return true;
+    }).catch(function(error) {
+        hideLoader();
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode == 'auth/weak-password') {
+            console.log('Javascript did not pick up this error');
+        } 
+        else if (errorCode == 'auth/email-already-in-use'){
+            var warning = "<strong>Invalid!</strong> User already exists"
+            setWarning(warning);
+            showWarning();
+        }else {
+            alert(errorMessage);
+        }
+        console.log(error);
+        // [END_EXCLUDE]
+        return false;
+    });
+    // [END createwithemail]
+
+
 }
 
 
