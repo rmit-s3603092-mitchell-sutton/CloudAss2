@@ -3,10 +3,6 @@
 * {
     box-sizing: border-box;
 }
-h1{
-    font-size: 40px;
-	font-family: arial;
-}
 
 body {
     margin: 0px;
@@ -15,16 +11,51 @@ body {
 
 /* Header */
 header {
-    padding: 20px;
+    padding: 0px;
     text-align: center;
     background: #2d2d2d;
 	color: white;
 	font-size: 50px;
+	font-family: 'Amatic SC', cursive;
+	
+}
+
+h1 {
+	margin-block-end: 10px;
+	margin-block-start: 50px;
+}
+
+#subhead {
+	font-size: 15px;
+	margin-block-end: 50px;
+	margin-block-start: 10px;
 }
 
 /*#auth, #home, #initialPage, #loginPage, #signupPage, #loggedin, #createPlaylist, #back-to-search, #search-before, #search-after, #playlist, #create-playlist{
     display: none;
 }*/
+
+#initialPage{
+	text-align: center;
+}
+	
+#loginPage{
+	text-align: center;
+}
+
+#signupPage{
+	text-align: center;
+}
+
+INPUT[type=password]{
+	padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+}
 
 .text-overflow {
     overflow: hidden;
@@ -35,6 +66,7 @@ header {
 
 .search-item{
     height: 200%;
+	width: 200%;
 }
 
 /* main */
@@ -44,10 +76,6 @@ main{
     background: white;
     opacity: 30%;
     border-radius: 20px;
-}
-
-.panel-heading{
-
 }
 
 .panel-body{
@@ -98,7 +126,7 @@ input.input {
     justify-content: center;
     align-items: center;
     padding: 0 20px;
-    min-width: 160px;
+    min-width: 300px;
     height: 50px;
     background-color: #12b538;
     border-radius: 25px;
