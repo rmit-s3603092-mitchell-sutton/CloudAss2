@@ -39,18 +39,21 @@ function signout(){
 
 function createPlaylist(){
     var text = playlist.value;
+	console.log("Hello");
+	console.log(firebase.auth().currentUser);
 
     db.collection("playlist").add({
-        creatorID: "1h3g47321b",
+		//Add current user here
+        creatorID: firebase.auth().currentUser,
         name: text,
         songs: [{
-            song: "Song 2",
-            artist: "Blur",
+            song: "New Song",
+            artist: "1234",
             id: "123ghuf7832vi"
         }]
-    })
-        .then(function(docRef) {
+    }).then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
+		//Add new playlist to user in DB
     })
         .catch(function(error) {
         console.error("Error adding document: ", error);
