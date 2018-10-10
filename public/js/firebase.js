@@ -23,6 +23,15 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
 
+function getUserStatus(){
+    if (user){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 function signout(){
     firebase.auth().signOut()
         .then(function() {
@@ -72,12 +81,12 @@ function createPlaylist(){
         name: text
     }).then(function(docRef) {
         currentPlaylist = docRef.id;
-        console.log("Document written with ID: ", playlistID);
+        console.log("Document written with ID: ", currentPlaylist);
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
     });
-    db.collection("user").doc(auth.currentUser.uid).add({
+    db.collection("user").doc(firebase.auth().currentUser.uid).set({
         playlistID: currentPlaylist
     }).then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -179,7 +188,7 @@ function signUp() {
     // [START createwithemail]
     showLoader();
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
-        db.collection("user").doc(auth.currentUser.uid).add({
+        db.collection("user").doc(firebase.auth().currentUser.uid).set({
             method: "email&pass"
         }).then(function(docRef) {
             console.log("Document written with ID: ", docRef.id);
