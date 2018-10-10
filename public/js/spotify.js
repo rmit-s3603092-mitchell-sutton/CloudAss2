@@ -17,7 +17,6 @@ var params = getHashParams();
 var access_token = params.access_token,
     refresh_token = params.refresh_token,
     error = params.error;
-
 if (error) {
     alert('There was an error during the authentication');
 } else {
