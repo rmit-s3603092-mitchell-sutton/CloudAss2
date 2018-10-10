@@ -1,4 +1,1 @@
 .env
-	CLIENT_ID=e754b8fcf51848189ec64a92dbdd08ad
-	CLIENT_SECRET=7510f95db92c46aa97cff409a249b534
-	REDIRECT=http://clouda2jm.appspot.com/callback
