@@ -33,6 +33,7 @@ document.getElementById('create-playlist').addEventListener('click', function(){
 }, false);
 
 document.getElementById("choose-playlist-button").addEventListener("click", function(){
+    choosePlaylist();
     showSearchBefore();
 });
 
@@ -45,9 +46,11 @@ document.getElementById('search-button').addEventListener('click', function() {
     showSearchAfter();
 });
 
-document.getElementById("create-playlist-button").addEventListener("click", function(){
-    createPlaylist();
+document.getElementById("showCreatePlaylist").addEventListener("click", function(){
     showCreatePlaylist();
+});
+document.getElementById("create-playlist-btn").addEventListener("click", function(){
+    createPlaylist();
 });
 
 document.getElementById("signout").addEventListener("click", function(){

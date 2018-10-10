@@ -1,8 +1,4 @@
 // Initialize Firebase
-/*
-import firebase from 'firebase'
-require('firebase/auth')
-*/
 var config = {
     apiKey: "AIzaSyA-KjQUMkefMJcThHIHCg5bBHy_fWuBfj8",
     authDomain: "clouda2jm.firebaseapp.com",
@@ -17,15 +13,15 @@ var db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
-    if(user){
+    if(user && checkAccess()){
         showLoggedIn();
+    }else if(user){
+        console.log("Not logged in");
     }
     else {
         showInitial();
     }
 });
-
-var playlist = document.getElementById("choose-playlist-input");
 
 function signout(){
     firebase.auth().signOut()
@@ -37,25 +33,56 @@ function signout(){
     });
 }
 
-function createPlaylist(){
+var currentPlaylist;
+
+function getPlaylist(){
+    return currentPlaylist;
+}
+
+function choosePlaylist(){
+    var playlist = document.getElementById("choose-playlist-input");
     var text = playlist.value;
-	console.log("Hello");
-	console.log(firebase.auth().currentUser);
+    console.log("choosing playlist");
+
+    var docRef = db.collection("playlist").doc(text);
+
+    docRef.get().then(function(doc) {
+        if (doc.exists) {
+            currentPlaylist = text;
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
+
+}
+
+function createPlaylist(){
+    var playlist = document.getElementById("create-playlist-name");
+
+    var text = playlist.value;
+    console.log("adding playlist");
+    console.log(firebase.auth().currentUser.uid);
 
     db.collection("playlist").add({
-		//Add current user here
-        creatorID: firebase.auth().currentUser,
-        name: text,
-        songs: [{
-            song: "New Song",
-            artist: "1234",
-            id: "123ghuf7832vi"
-        }]
+        //Add current user here
+        creatorID: firebase.auth().currentUser.uid,
+        name: text
+    }).then(function(docRef) {
+        currentPlaylist = docRef.id;
+        console.log("Document written with ID: ", playlistID);
+        //Add new playlist to user in DB
+    }).catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+    db.collection("user").doc(auth.currentUser.uid).add({
+        playlistID: currentPlaylist
     }).then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
-		//Add new playlist to user in DB
-    })
-        .catch(function(error) {
+        //Add new playlist to user in DB
+    }).catch(function(error) {
         console.error("Error adding document: ", error);
     });
 }
@@ -89,7 +116,6 @@ function logIn() {
     showLoader();
     firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
         hideLoader();
-
         return true;
 
     }).catch(function(error) {
@@ -153,6 +179,15 @@ function signUp() {
     // [START createwithemail]
     showLoader();
     firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+        db.collection("user").doc(auth.currentUser.uid).add({
+            method: "email&pass"
+        }).then(function(docRef) {
+            console.log("Document written with ID: ", docRef.id);
+            currentPlaylist = docRef.id;
+            //Add new playlist to user in DB
+        }).catch(function(error) {
+            console.error("Error adding document: ", error);
+        });
         hideLoader();
 
         return true;
