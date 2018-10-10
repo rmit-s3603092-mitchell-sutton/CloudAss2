@@ -106,18 +106,21 @@ function createPlaylist(){
     }).then(function(docRef) {
         currentPlaylist = docRef.id;
         console.log("Document written with ID: ", currentPlaylist);
+
+        db.collection("user").doc(firebase.auth().currentUser.uid).set({
+            playlistID: currentPlaylist
+        }).then(function(docRef2) {
+            console.log("Document written with ID: ", firebase.auth().currentUser.uid);
+            //Add new playlist to user in DB
+        }).catch(function(error) {
+            console.error("Error adding document: ", error);
+        });
+
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
     });
-    db.collection("user").doc(firebase.auth().currentUser.uid).set({
-        playlistID: currentPlaylist
-    }).then(function(docRef) {
-        console.log("Document written with ID: ", firebase.auth().currentUser.uid);
-        //Add new playlist to user in DB
-    }).catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+
 }
 
 function logIn() {
