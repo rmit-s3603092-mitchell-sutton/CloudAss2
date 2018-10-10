@@ -9,6 +9,11 @@ document.getElementById('goToLogin').addEventListener('click', function() {
 document.getElementById('goToSignup').addEventListener('click', function() {
     showSignup();
 }, false);
+
+document.getElementById('goToGoog').addEventListener('click', function() {
+    googLogin();
+}, false);
+
 document.getElementById('loginBtn').addEventListener('click', function() {
     if(logIn()){
         console.log("Logged In");
