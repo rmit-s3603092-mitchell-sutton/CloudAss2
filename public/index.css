@@ -31,9 +31,9 @@ h1 {
 	margin-block-start: 10px;
 }
 
-/*#auth, #home, #initialPage, #loginPage, #signupPage, #loggedin, #createPlaylist, #back-to-search, #search-before, #search-after, #playlist, #create-playlist{
+#auth, #home, #initialPage, #loginPage, #signupPage, #loggedin, #createPlaylist, #back-to-search, #search-before, #search-after, #playlist, #create-playlist{
     display: none;
-}*/
+}
 
 #initialPage{
 	text-align: center;
