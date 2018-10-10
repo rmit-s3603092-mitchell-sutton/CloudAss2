@@ -89,7 +89,7 @@ function createPlaylist(){
     db.collection("user").doc(firebase.auth().currentUser.uid).set({
         playlistID: currentPlaylist
     }).then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Document written with ID: ", firebase.auth().currentUser.uid);
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
@@ -191,8 +191,8 @@ function signUp() {
         db.collection("user").doc(firebase.auth().currentUser.uid).set({
             method: "email&pass"
         }).then(function(docRef) {
-            console.log("Document written with ID: ", docRef.id);
-            currentPlaylist = docRef.id;
+            console.log("Document written with ID: ", firebase.auth().currentUser.uid);
+            currentPlaylist = firebase.auth().currentUser.uid;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
