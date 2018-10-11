@@ -13,6 +13,55 @@ var db = firebase.firestore();
 var currentPlaylist;
 
 
+var usingSpotLogin = false;
+
+function spotLogin(){
+	$.ajax({
+		url: 'https://api.spotify.com/v1/me',
+		headers: {
+			'Authorization': 'Bearer ' + access_token
+		},
+		success: function(response) {			
+			console.log("Woah we made it this far!");
+			console.log(response);
+			var email = response.email;
+			var password = "Test1234";
+			
+			firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+				hideLoader();
+				return true;
+			}).catch(function(error) {
+				// Handle Errors here.
+				hideLoader();
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				// [START_EXCLUDE]
+				if (errorCode === 'auth/wrong-password') {
+					var warning = "<strong>Invalid!</strong> Password incorrect";
+					setWarning(warning);
+					showWarning();
+				} 
+				else if (errorCode == 'auth/user-not-found'){
+					var warning = "<strong>Invalid!</strong> User not found";
+					setWarning(warning);
+					showWarning();
+
+				}else {
+					alert(errorMessage);
+				}
+				console.log(error);
+				return false;
+			});
+			
+			console.log(response);
+			 $('#login').hide();
+			$('#loggedin').show();
+		}
+	});
+	//console.log("Setting the thing to tru");
+	//usingSpotLogin = true;
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
     if(checkAccess){
 
@@ -42,25 +91,27 @@ function getUserStatus(){
 var provider = new firebase.auth.GoogleAuthProvider();
 
 function googLogin(){
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        // ...
-        console.log(user.uid);
-    }).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
-    });
-}
+	firebase.auth().signInWithPopup(provider).then(function(result) {
+		// This gives you a Google Access Token. You can use it to access the Google API.
+		var token = result.credential.accessToken;
+		// The signed-in user info.
+		var user = result.user;
+		// ...
+		console.log(user.uid);
+	}).catch(function(error) {
+		// Handle Errors here.
+		var errorCode = error.code;
+		var errorMessage = error.message;
+		// The email of the user's account used.
+		var email = error.email;
+		// The firebase.auth.AuthCredential type that was used.
+		var credential = error.credential;
+		// ...
+		console.log(errorCode);
+		console.log(errorMessage);
+	});
 
+}
 
 function signout(){
     firebase.auth().signOut()
@@ -203,7 +254,6 @@ function logIn() {
         console.log(error);
         return false;
     });
-
 
 }
 function signUp() {

@@ -5,10 +5,10 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = "e754b8fcf51848189ec64a92dbdd08ad"; // Your client id
-var client_secret = "7510f95db92c46aa97cff409a249b534"; // Your secret
-//var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-var redirect_uri = "http://clouda2jm.appspot.com/callback";
+var client_id = 'e754b8fcf51848189ec64a92dbdd08ad'; // Your client id
+var client_secret = '7510f95db92c46aa97cff409a249b534'; // Your secret
+//var redirect_uri = 'http://localhost:8080/callback'; // Your redirect uri
+var redirect_uri = 'http://clouda2jm.appspot.com/callback';
 
 /* ---------- SPOTIFY ---------------*/
 
@@ -30,31 +30,30 @@ app.use(express.static(__dirname + '/public'))
    .use(cors())
    .use(cookieParser());
 
-
 app.get('/login', function(req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
   console.log("Here yo");
-/*
+  
   // your application requests authorization
   var scope = 'user-read-private user-read-email';
   res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }));
-	*/
+	querystring.stringify({
+	  response_type: 'code',
+	  client_id: client_id,
+	  scope: scope,
+	  redirect_uri: redirect_uri,
+	  state: state
+	}));
 });
+
 
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
-
+  console.log("We callin back");
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -115,6 +114,7 @@ app.get('/callback', function(req, res) {
 app.get('/refresh_token', function(req, res) {
 
   // requesting access token from refresh token
+  console.log("We refreshing the token");
   var refresh_token = req.query.refresh_token;
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -134,6 +134,8 @@ app.get('/refresh_token', function(req, res) {
       });
     }
   });
+  console.log("We down here");
+  usingSpotLogin = false;
 });
 
 console.log('Listening on 8080');
