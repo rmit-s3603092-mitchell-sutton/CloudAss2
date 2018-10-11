@@ -180,7 +180,12 @@ function populatePlaylist(){
     }
 }
 function createPlaylist(){
+<<<<<<< HEAD
+    
+    var returnVal = false;
+=======
     var result = false;
+>>>>>>> 2e3583c6c5d68616a984c7991b754fdb681d7777
     var playlist = document.getElementById("create-playlist-name");
 
     var text = playlist.value;
@@ -200,6 +205,15 @@ function createPlaylist(){
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
             
+<<<<<<< HEAD
+            
+            
+            returnVal = true;
+            //Add new playlist to user in DB
+        }).catch(function(error) {
+            console.error("Error adding document: ", error);
+            returnVal = false;
+=======
             populatePlaylist();
             showSearchBefore();
             
@@ -208,15 +222,23 @@ function createPlaylist(){
         }).catch(function(error) {
             console.error("Error adding document: ", error);
             result = false;
+>>>>>>> 2e3583c6c5d68616a984c7991b754fdb681d7777
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
+<<<<<<< HEAD
+        returnVal = false;
+    });
+    
+    return returnVal;
+=======
         result = false;
     });
     
     return result;
+>>>>>>> 2e3583c6c5d68616a984c7991b754fdb681d7777
 
 }
 
