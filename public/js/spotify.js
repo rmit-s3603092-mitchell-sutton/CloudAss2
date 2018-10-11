@@ -95,4 +95,16 @@ if (error) {
         });
 
     }
+
+    function addSong(){
+
+        var select = document.getElementById("search-items");
+
+        if (obj !== null) {
+            return (obj.innerHTML.indexOf('value="' + value + '"') > -1);
+        } else {
+            return false;
+        }
+
+    }
 }
