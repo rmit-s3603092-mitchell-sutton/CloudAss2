@@ -26,7 +26,7 @@ function spotLogin(){
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
 	while(usingSpotLogin){
-		
+		console.log("in the loop");
 	}
     if(user){
 		console.log("Or maybe over here?");
