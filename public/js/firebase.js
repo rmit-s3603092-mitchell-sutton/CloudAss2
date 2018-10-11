@@ -153,6 +153,7 @@ function populatePlaylist(){
                 console.log(doc.data().name);
 
                 var songs = doc.data().songs;
+				
                 if (songs != null){
                     var size = Object.keys(songs).length;
 
@@ -194,13 +195,6 @@ function populatePlaylist(){
 }
 
 function addSong(){
-
-
-
-}
-
-function getLink(){
-
 
 
 }

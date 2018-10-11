@@ -46,6 +46,20 @@ if (error) {
                 });
             }, false);*/
 
+	var results = [];
+	
+	function getSearchedSongs(){
+		return results;
+	}
+	
+	class songResult{
+		constructor (name, artist, id){
+			this.name = name;
+			this.artist = artist;
+			this.id = id;
+		}
+	}
+			
     function searchSong(){
         var searchRaw = document.getElementById("search-input").value;
         var search = searchRaw.replace(" ", "%20"); //"Test%20-%20Text"
@@ -76,6 +90,11 @@ if (error) {
 
                         newElement.id = "search-item"+i; 
                         newElement.className = "search-item";
+						newElement.value = i;
+						
+						var song = new songResult(response.tracks.items[i].name, response.tracks.items[i].artists[0].name, response.tracks.items[i].id);
+						
+						results.push(song);
 
                         if(i%2 == 0){
                             newElement.setAttribute("style", "background: #DADADA;");
