@@ -76,6 +76,7 @@ if (error) {
 
                         newElement.id = "search-item"+i; 
                         newElement.className = "search-item";
+
                         if(i%2 == 0){
                             newElement.setAttribute("style", "background: #DADADA;");
                         }
