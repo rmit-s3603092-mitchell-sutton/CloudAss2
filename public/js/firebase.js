@@ -98,6 +98,8 @@ function choosePlaylist(){
 }
 
 function createPlaylist(){
+    
+    var returnVal = false;
     var playlist = document.getElementById("create-playlist-name");
 
     var text = playlist.value;
@@ -114,18 +116,23 @@ function createPlaylist(){
             playlistID: currentPlaylist
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
-            return true;
+            
+            
+            
+            returnVal = true;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
-            return false;
+            returnVal = false;
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
-        return false;
+        returnVal = false;
     });
+    
+    return returnVal;
 
 }
 
