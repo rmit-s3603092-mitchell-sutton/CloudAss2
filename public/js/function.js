@@ -1,8 +1,3 @@
-if (!checkAccess()){   
-    document.location.href ="/login";
-    showInitial();
-}
-
 document.getElementById('goToLogin').addEventListener('click', function() {
     showLogin();
 }, false);
@@ -73,7 +68,9 @@ document.getElementById("showCreatePlaylist").addEventListener("click", function
 });
 document.getElementById("create-playlist-btn").addEventListener("click", function(){
     if(getUserStatus){
-        createPlaylist();
+        if(createPlaylist()){
+            populatePlaylist();
+        }
     }
 
 });
