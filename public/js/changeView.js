@@ -46,7 +46,7 @@ function showSearchAfter(){
     $('#auth').hide();
     $('#loggedin').show();
     $('#home').show();
-    $('#back-to-search').hide();
+    $('#back-to-search').show();
     $('#search-before').hide();
     $('#search-after').show();
     $('#playlist').show();
