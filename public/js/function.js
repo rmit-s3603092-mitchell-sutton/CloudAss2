@@ -1,5 +1,6 @@
+
 if (!checkAccess()){   
-    document.location.href ="/login";
+    //document.location.href ="/login";
     showInitial();
 }
 
@@ -12,6 +13,10 @@ document.getElementById('goToSignup').addEventListener('click', function() {
 
 document.getElementById('goToGoog').addEventListener('click', function() {
     googLogin();
+}, false);
+
+document.getElementById('goToSpot').addEventListener('click', function() {
+    spotLogin();
 }, false);
 
 document.getElementById('loginBtn').addEventListener('click', function() {

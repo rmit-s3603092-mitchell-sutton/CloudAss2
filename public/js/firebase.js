@@ -15,12 +15,25 @@ firebase.initializeApp(config);
 
 var db = firebase.firestore();
 
+var usingSpotLogin = false;
+
+function spotLogin(){
+	document.location.href ="/login";
+	console.log("Setting the thing to tru");
+	usingSpotLogin = true;
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
+	while(usingSpotLogin){
+		
+	}
     if(user){
+		console.log("Or maybe over here?");
         showLoggedIn();
     }
     else {
+		console.log("Over Here!");
         showInitial();
     }
 });
@@ -46,9 +59,10 @@ function googLogin(){
 		// The firebase.auth.AuthCredential type that was used.
 		var credential = error.credential;
 		// ...
+		console.log(errorCode);
+		console.log(errorMessage);
 	});
 }
-
 
 function signout(){
     firebase.auth().signOut()
