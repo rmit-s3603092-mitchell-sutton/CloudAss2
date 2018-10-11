@@ -14,16 +14,57 @@ var db = firebase.firestore();
 var usingSpotLogin = false;
 
 function spotLogin(){
-	document.location.href ="/login";
-	console.log("Setting the thing to tru");
-	usingSpotLogin = true;
+	$.ajax({
+		url: 'https://api.spotify.com/v1/me',
+		headers: {
+			'Authorization': 'Bearer ' + access_token
+		},
+		success: function(response) {			
+			console.log("Woah we made it this far!");
+			console.log(response);
+			var email = response.email;
+			var password = "Test1234";
+			
+			firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+				hideLoader();
+				return true;
+			}).catch(function(error) {
+				// Handle Errors here.
+				hideLoader();
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				// [START_EXCLUDE]
+				if (errorCode === 'auth/wrong-password') {
+					var warning = "<strong>Invalid!</strong> Password incorrect";
+					setWarning(warning);
+					showWarning();
+				} 
+				else if (errorCode == 'auth/user-not-found'){
+					var warning = "<strong>Invalid!</strong> User not found";
+					setWarning(warning);
+					showWarning();
+
+				}else {
+					alert(errorMessage);
+				}
+				console.log(error);
+				return false;
+			});
+			
+			console.log(response);
+			 $('#login').hide();
+			$('#loggedin').show();
+		}
+	});
+	//console.log("Setting the thing to tru");
+	//usingSpotLogin = true;
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
     console.log("State Changed");
-	while(usingSpotLogin){
-		console.log("in the loop");
-	}
+	//while(usingSpotLogin){
+	//	console.log("in the loop");
+	//}
     if(user && checkAccess()){
         showLoggedIn();
     }else if(user){
@@ -187,7 +228,6 @@ function logIn() {
         console.log(error);
         return false;
     });
-
 
 }
 function signUp() {

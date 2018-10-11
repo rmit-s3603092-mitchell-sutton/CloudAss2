@@ -1,6 +1,6 @@
 
 if (!checkAccess()){   
-    //document.location.href ="/login";
+    document.location.href ="/login";
     showInitial();
 }
 
