@@ -13,8 +13,58 @@ var db = firebase.firestore();
 var currentPlaylist;
 
 
+var usingSpotLogin = false;
+
+function spotLogin(){
+    $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {			
+            console.log("Woah we made it this far!");
+            console.log(response);
+            var email = response.email;
+            var password = "Test1234";
+
+            firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+                hideLoader();
+                return true;
+            }).catch(function(error) {
+                // Handle Errors here.
+                hideLoader();
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode === 'auth/wrong-password') {
+                    var warning = "<strong>Invalid!</strong> Password incorrect";
+                    setWarning(warning);
+                    showWarning();
+                } 
+                else if (errorCode == 'auth/user-not-found'){
+                    var warning = "<strong>Invalid!</strong> User not found";
+                    setWarning(warning);
+                    showWarning();
+
+                }else {
+                    alert(errorMessage);
+                }
+                console.log(error);
+                return false;
+            });
+
+            console.log(response);
+            $('#login').hide();
+            $('#loggedin').show();
+        }
+    });
+    //console.log("Setting the thing to tru");
+    //usingSpotLogin = true;
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
-    if(checkAccess){
+    if(checkAccess()){
+        console.log("Spotify api logged in");
 
         if(user){
             console.log("Logged in");
@@ -26,6 +76,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         }
     }
     else{
+        console.log("Not spotify api logged in");
         document.location.href ="/login";
     }
 });
@@ -58,9 +109,11 @@ function googLogin(){
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
         // ...
+        console.log(errorCode);
+        console.log(errorMessage);
     });
-}
 
+}
 
 function signout(){
     firebase.auth().signOut()
@@ -82,22 +135,52 @@ function choosePlaylist(){
     var text = playlist.value;
     console.log("choosing playlist");
 
-    var docRef = db.collection("playlist").doc(text);
+    if(text != null){
+        var docRef = db.collection("playlist").doc(text);
 
-    docRef.get().then(function(doc) {
-        if (doc.exists) {
-            currentPlaylist = doc.id;
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                currentPlaylist = doc.id;
+                document.cookie = doc.id;
+
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+    else{
+        console.log("Text was Null")
+    }
+
 
 }
+function populatePlaylist(){
+    if (document.cookie != null){
+        var docRef = db.collection("playlist").doc(currentPlaylist);
 
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Document data:", doc.data());
+                console.log(doc.data().creatorID);
+                console.log(doc.data().name);
+
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+    else{
+        console.log("Playlist does not exist");
+    }
+}
 function createPlaylist(){
+    var result = false;
     var playlist = document.getElementById("create-playlist-name");
 
     var text = playlist.value;
@@ -109,45 +192,35 @@ function createPlaylist(){
         name: text
     }).then(function(docRef) {
         currentPlaylist = docRef.id;
+        document.cookie = docRef.id;
+
         console.log("Playlist saved as:"+docRef.id);
         db.collection("user").doc(firebase.auth().currentUser.uid).set({
             playlistID: currentPlaylist
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
-            return true;
+            
+            populatePlaylist();
+            showSearchBefore();
+            
+            result = true;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
-            return false;
+            result = false;
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
-        return false;
+        result = false;
     });
+    
+    return result;
 
 }
 
-function populatePlaylist(){
-    if (currentPlaylist != null){
-        var docRef = db.collection("playlist").doc(currentPlaylist);
 
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log("Document data:", doc.data());
-                console.log(doc.data().creatorID);
-                console.log(doc.data().name);
-                
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-    }
-}
 
 function logIn() {
     if (firebase.auth().currentUser) {
@@ -203,7 +276,6 @@ function logIn() {
         console.log(error);
         return false;
     });
-
 
 }
 function signUp() {

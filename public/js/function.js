@@ -1,3 +1,5 @@
+//document.location.href ="/login";
+
 document.getElementById('goToLogin').addEventListener('click', function() {
     showLogin();
 }, false);
@@ -7,6 +9,10 @@ document.getElementById('goToSignup').addEventListener('click', function() {
 
 document.getElementById('goToGoog').addEventListener('click', function() {
     googLogin();
+}, false);
+
+document.getElementById('goToSpot').addEventListener('click', function() {
+    spotLogin();
 }, false);
 
 document.getElementById('loginBtn').addEventListener('click', function() {
@@ -68,9 +74,7 @@ document.getElementById("showCreatePlaylist").addEventListener("click", function
 });
 document.getElementById("create-playlist-btn").addEventListener("click", function(){
     if(getUserStatus){
-        if(createPlaylist()){
-            populatePlaylist();
-        }
+        createPlaylist();
     }
 
 });

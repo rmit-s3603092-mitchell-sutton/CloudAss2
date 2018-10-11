@@ -17,17 +17,20 @@ var params = getHashParams();
 var access_token = params.access_token,
     refresh_token = params.refresh_token,
     error = params.error;
-if (error) {
-    alert('There was an error during the authentication');
-} else {
 
-    function checkAccess(){
-        if (access_token) {
+function checkAccess(){
+        console.log("access token = "+ access_token);
+        if (access_token != null) {
             return true;
         } else {   
             return false;
         }
-    }
+}
+if (error) {
+    alert('There was an error during the authentication');
+} else {
+
+    
     /*document.getElementById('obtain-new-token').addEventListener('click', function() {
                 $.ajax({
                     url: '/refresh_token',
