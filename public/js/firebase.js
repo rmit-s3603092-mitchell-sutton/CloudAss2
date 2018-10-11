@@ -98,8 +98,7 @@ function spotLogin(){
 			})
 			
 			console.log(response);
-			 $('#login').hide();
-			$('#loggedin').show();
+			showLoggedIn();
 		}
 	});
 
