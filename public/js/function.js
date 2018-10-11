@@ -38,32 +38,58 @@ document.getElementById("signupBtn").addEventListener("click", function(){
 
     }
 });
+
+
 document.getElementById('create-playlist').addEventListener('click', function(){
-    showCreatePlaylist();
+    if(getUserStatus){
+        showCreatePlaylist();
+
+    }
 }, false);
 
 document.getElementById("choose-playlist-button").addEventListener("click", function(){
-    showSearchBefore();
+    if(getUserStatus){
+        choosePlaylist();
+        showSearchBefore();
+    }
+
 });
 
 document.getElementById('back-to-search-btn').addEventListener('click', function() {
-    showSearchBefore();
+    if(getUserStatus){
+        showSearchBefore();
+
+    }
 }, false);
 
 document.getElementById('search-button').addEventListener('click', function() {
-    searchSong();
-    showSearchAfter();
+    if(getUserStatus){
+        searchSong();
+        showSearchAfter();
+    }
+
 });
 
-document.getElementById("create-playlist-button").addEventListener("click", function(){
-    createPlaylist();
-    showCreatePlaylist();
+document.getElementById("showCreatePlaylist").addEventListener("click", function(){
+    if(getUserStatus){
+        showCreatePlaylist();
+    }
+
+});
+document.getElementById("create-playlist-btn").addEventListener("click", function(){
+    if(getUserStatus){
+        createPlaylist();
+    }
+
 });
 
 document.getElementById("signout").addEventListener("click", function(){
-    if (signout()){
-        showInitial();
+    if(getUserStatus){
+        if (signout()){
+            showInitial();
+        }
     }
+
 });
 
 
