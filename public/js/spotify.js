@@ -88,12 +88,12 @@ if (error) {
                     for(var i =0; i<size; i++){
                         var newElement = document.createElement('option');
 
-                        newElement.id = "search-item"+i; 
+                        newElement.id = i; 
                         newElement.className = "search-item";
-						newElement.value = i;
 						
 						var song = new songResult(response.tracks.items[i].name, response.tracks.items[i].artists[0].name, response.tracks.items[i].id);
 						
+                        console.log("song "+i+" = "+song);
 						results.push(song);
 
                         if(i%2 == 0){
@@ -102,7 +102,7 @@ if (error) {
                         document.getElementById("search-items").appendChild(newElement);
                         var source = document.getElementById('song-template').innerHTML;
                         var template = Handlebars.compile(source);
-                        var placeholder = document.getElementById('search-item'+i);
+                        var placeholder = document.getElementById(i);
 
                         placeholder.innerHTML = template(response.tracks.items[i]);
                     }

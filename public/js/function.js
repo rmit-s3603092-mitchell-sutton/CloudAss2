@@ -89,9 +89,16 @@ document.getElementById("signout").addEventListener("click", function(){
 
 });
 
-document.getElementById("sharePlaylist").addEventListener("click", function(){
+/*document.getElementById("sharePlaylist").addEventListener("click", function(){
     if(getUserStatus){
         document.getElementById("shareLink").innerHTML = getPlaylist();
+    }
+
+});*/
+
+document.getElementById("addSong").addEventListener("click", function(){
+    if(getUserStatus){
+        addSong();
     }
 
 });
