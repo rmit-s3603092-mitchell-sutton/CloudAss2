@@ -89,6 +89,13 @@ document.getElementById("signout").addEventListener("click", function(){
 
 });
 
+document.getElementById("sharePlaylist").addEventListener("click", function(){
+    if(getUserStatus){
+        document.getElementById("shareLink").innerHTML = getPlaylist();
+    }
+
+});
+
 
 
 

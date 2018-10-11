@@ -95,7 +95,7 @@ if (error) {
 						var song = new songResult(response.tracks.items[i].name, response.tracks.items[i].artists[0].name, response.tracks.items[i].id);
 						
 						results.push(song);
-						
+
                         if(i%2 == 0){
                             newElement.setAttribute("style", "background: #DADADA;");
                         }

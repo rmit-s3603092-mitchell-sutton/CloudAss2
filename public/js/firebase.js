@@ -29,7 +29,6 @@ function spotLogin(){
                     method: "spotify"
                 }).then(function(docRef) {
                     console.log("Document written with ID: ", firebase.auth().currentUser.uid);
-                    currentPlaylist = firebase.auth().currentUser.uid;
                     //Add new playlist to user in DB
                 }).catch(function(error) {
                     console.error("Error adding document: ", error);
@@ -141,6 +140,12 @@ function populatePlaylist(){
     if (document.cookie != null){
         var docRef = db.collection("playlist").doc(currentPlaylist);
 
+        var select = document.getElementById("playlist-items");
+        var length = select.options.length;
+        for (i = 0; i < length; i++) {
+            select.options[i] = null;
+        }
+
         docRef.get().then(function(doc) {
             if (doc.exists) {
                 console.log("Document data:", doc.data());
@@ -151,7 +156,7 @@ function populatePlaylist(){
 				
                 if (songs != null){
                     var size = Object.keys(songs).length;
-                    
+
                     console.log("size: " + size);
 
 
@@ -190,7 +195,8 @@ function populatePlaylist(){
 }
 
 function addSong(){
-    
+
+
 }
 
 function choosePlaylist(){
@@ -205,6 +211,7 @@ function choosePlaylist(){
             if (doc.exists) {
                 currentPlaylist = doc.id;
                 document.cookie = doc.id;
+                document.getElementById("playlist-name").innerHTML = doc.name;
                 populatePlaylist();
                 showSearchBefore();
 
@@ -248,6 +255,7 @@ function createPlaylist(){
             playlistID: currentPlaylist
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
+            document.getElementById("playlist-name").innerHTML = text;
             populatePlaylist();
             showSearchBefore();
 
