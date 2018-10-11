@@ -102,10 +102,12 @@ function spotLogin(){
 		}
 	});
 
+
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
-    if(checkAccess){
+    if(checkAccess()){
+        console.log("Spotify api logged in");
 
         if(user){
             console.log("Logged in");
@@ -117,6 +119,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         }
     }
     else{
+        console.log("Not spotify api logged in");
         document.location.href ="/login";
     }
 });
@@ -133,25 +136,25 @@ function getUserStatus(){
 var provider = new firebase.auth.GoogleAuthProvider();
 
 function googLogin(){
-	firebase.auth().signInWithPopup(provider).then(function(result) {
-		// This gives you a Google Access Token. You can use it to access the Google API.
-		var token = result.credential.accessToken;
-		// The signed-in user info.
-		var user = result.user;
-		// ...
-		console.log(user.uid);
-	}).catch(function(error) {
-		// Handle Errors here.
-		var errorCode = error.code;
-		var errorMessage = error.message;
-		// The email of the user's account used.
-		var email = error.email;
-		// The firebase.auth.AuthCredential type that was used.
-		var credential = error.credential;
-		// ...
-		console.log(errorCode);
-		console.log(errorMessage);
-	});
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        // ...
+        console.log(user.uid);
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+        console.log(errorCode);
+        console.log(errorMessage);
+    });
 
 }
 
@@ -175,22 +178,54 @@ function choosePlaylist(){
     var text = playlist.value;
     console.log("choosing playlist");
 
-    var docRef = db.collection("playlist").doc(text);
+    if(text != null){
+        var docRef = db.collection("playlist").doc(text);
 
-    docRef.get().then(function(doc) {
-        if (doc.exists) {
-            currentPlaylist = doc.id;
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                currentPlaylist = doc.id;
+                document.cookie = doc.id;
+
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+    else{
+        console.log("Text was Null")
+    }
+
 
 }
+function populatePlaylist(){
+    if (document.cookie != null){
+        var docRef = db.collection("playlist").doc(currentPlaylist);
 
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Document data:", doc.data());
+                console.log(doc.data().creatorID);
+                console.log(doc.data().name);
+
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+    else{
+        console.log("Playlist does not exist");
+    }
+}
 function createPlaylist(){
+    
+    var returnVal = false;
+
     var playlist = document.getElementById("create-playlist-name");
 
     var text = playlist.value;
@@ -202,45 +237,35 @@ function createPlaylist(){
         name: text
     }).then(function(docRef) {
         currentPlaylist = docRef.id;
+        document.cookie = docRef.id;
+
         console.log("Playlist saved as:"+docRef.id);
         db.collection("user").doc(firebase.auth().currentUser.uid).set({
             playlistID: currentPlaylist
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
-            return true;
+            
+            
+            
+            returnVal = true;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
-            return false;
+            returnVal = false;
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
-        return false;
+        returnVal = false;
     });
+    
+    return returnVal;
+
 
 }
 
-function populatePlaylist(){
-    if (currentPlaylist != null){
-        var docRef = db.collection("playlist").doc(currentPlaylist);
 
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log("Document data:", doc.data());
-                console.log(doc.data().creatorID);
-                console.log(doc.data().name);
-                
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-    }
-}
 
 function logIn() {
     if (firebase.auth().currentUser) {
