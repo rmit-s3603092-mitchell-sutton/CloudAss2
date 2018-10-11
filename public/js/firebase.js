@@ -161,7 +161,7 @@ function populatePlaylist(){
                 loadedSongs = doc.data().songs;
 
                 if (loadedSongs != null){
-                    var size = Object.keys(songs).length;
+                    var size = Object.keys(loadedSongs).length;
 
                     console.log("size: " + size);
 
@@ -204,60 +204,35 @@ function addSong(){
 
     var select = document.getElementById("playlist-items");
     var currentInd = select.selectedIndex;
+    
 
-    var docRef = db.collection("playlist").doc(currentPlaylist);
-    docRef.get().then(function(doc) {
-        if (doc.exists) {
-
-            console.log("test ended up here, EXISTS");
-            var songs = doc.songs;
-            var currentSong = songs[currentInd];
-            
-            var id = currentSong.id;
-            var name = currentSong.name;
-            var artist = currentSong.artist;
-            
-            db.collection("playlist").doc(currentPlaylist);
-            docRef.set({
-                songs: [{
-                    id: id,
-                    name: name,
-                    artist: artist
-                }]
-            },{ merge: true }).then(function(doc){
-                console.log("was able to set current song");
-                populatePlaylist();
-
-            }).catch(function(error){
-                console.log("Adding song did not work");
-            });
-
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
+    console.log("test ended up here, EXISTS");
+    var songs = getSearchedSongs();
+    var currentSong = songs[currentInd];
+    
+    console.log(songs);
+    console.log(currentSong);
 
 
+    var id = currentSong.id;
+    var name = currentSong.name;
+    var artist = currentSong.artist;
 
-
-    console.log("CurrentInd = "+currentInd + ", currentSong = "+ currentSong);
-
-    loadedSongs.push(currentSong);
-
-    var docRef = db.collection("playlist").doc(currentPlaylist);
-    docRef.update({
-        songs: loadedSongs
-    }).then(function(doc){
-
+    docRef = db.collection("playlist").doc(currentPlaylist);
+    docRef.set({
+        songs: [{
+            id: id,
+            name: name,
+            artist: artist
+        }]
+    },{ merge: true }).then(function(doc){
+        console.log("was able to set current song");
         populatePlaylist();
-
 
     }).catch(function(error){
         console.log("Adding song did not work");
     });
+
 
 }
 

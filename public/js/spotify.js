@@ -93,6 +93,7 @@ if (error) {
 						
 						var song = new songResult(response.tracks.items[i].name, response.tracks.items[i].artists[0].name, response.tracks.items[i].id);
 						
+                        console.log("song "+i+" = "+song);
 						results.push(song);
 
                         if(i%2 == 0){
