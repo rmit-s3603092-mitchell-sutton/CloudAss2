@@ -11,8 +11,6 @@ firebase.initializeApp(config);
 
 var db = firebase.firestore();
 
-var usingSpotLogin = false;
-
 function spotLogin(){
 	$.ajax({
 		url: 'https://api.spotify.com/v1/me',
@@ -25,39 +23,84 @@ function spotLogin(){
 			var email = response.email;
 			var password = "Test1234";
 			
-			firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-				hideLoader();
-				return true;
-			}).catch(function(error) {
-				// Handle Errors here.
-				hideLoader();
-				var errorCode = error.code;
-				var errorMessage = error.message;
-				// [START_EXCLUDE]
-				if (errorCode === 'auth/wrong-password') {
-					var warning = "<strong>Invalid!</strong> Password incorrect";
-					setWarning(warning);
-					showWarning();
-				} 
-				else if (errorCode == 'auth/user-not-found'){
-					var warning = "<strong>Invalid!</strong> User not found";
-					setWarning(warning);
-					showWarning();
+			admin.auth().getUserByEmail(email).then(user => { 
+			  // User already exists
+			  console.log("User exist");
+			  
+			  	firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+					hideLoader();
+					return true;
+				}).catch(function(error) {
+					// Handle Errors here.
+					hideLoader();
+					var errorCode = error.code;
+					var errorMessage = error.message;
+					// [START_EXCLUDE]
+					if (errorCode === 'auth/wrong-password') {
+						var warning = "<strong>Invalid!</strong> Password incorrect";
+						setWarning(warning);
+						showWarning();
+					} 
+					else if (errorCode == 'auth/user-not-found'){
+						var warning = "<strong>Invalid!</strong> User not found";
+						setWarning(warning);
+						showWarning();
 
-				}else {
-					alert(errorMessage);
-				}
-				console.log(error);
-				return false;
-			});
+					}else {
+						alert(errorMessage);
+					}
+					console.log(error);
+					return false;
+				});
+			  
+			}).catch(err => { 
+			  if (err.code === 'auth/user-not-found') {
+				// User doesn't exist yet, create it...
+				console.log("User don't exist");
+				
+				firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+					db.collection("user").doc(firebase.auth().currentUser.uid).set({
+						method: "spotify"
+					}).then(function(docRef) {
+						console.log("Document written with ID: ", firebase.auth().currentUser.uid);
+						currentPlaylist = firebase.auth().currentUser.uid;
+						//Add new playlist to user in DB
+					}).catch(function(error) {
+						console.error("Error adding document: ", error);
+					});
+					hideLoader();
+
+					return true;
+				}).catch(function(error) {
+					hideLoader();
+					// Handle Errors here.
+					var errorCode = error.code;
+					var errorMessage = error.message;
+					// [START_EXCLUDE]
+					if (errorCode == 'auth/weak-password') {
+						console.log('Javascript did not pick up this error');
+					} 
+					else if (errorCode == 'auth/email-already-in-use'){
+						var warning = "<strong>Invalid!</strong> User already exists"
+						setWarning(warning);
+						showWarning();
+					}else {
+						alert(errorMessage);
+					}
+					console.log(error);
+					// [END_EXCLUDE]
+					return false;
+				});
+				
+			}
+			})
 			
 			console.log(response);
 			 $('#login').hide();
 			$('#loggedin').show();
 		}
 	});
-	//console.log("Setting the thing to tru");
-	//usingSpotLogin = true;
+
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
