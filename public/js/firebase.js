@@ -14,93 +14,56 @@ var currentPlaylist;
 
 
 function spotLogin(){
-	$.ajax({
-		url: 'https://api.spotify.com/v1/me',
-		headers: {
-			'Authorization': 'Bearer ' + access_token
-		},
-		success: function(response) {			
-			console.log("Woah we made it this far!");
-			console.log(response);
-			var email = response.email;
-			var password = "Test1234";
-			
-			admin.auth().getUserByEmail(email).then(user => { 
-			  // User already exists
-			  console.log("User exist");
-			  
-			  	firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-					hideLoader();
-					return true;
-				}).catch(function(error) {
-					// Handle Errors here.
-					hideLoader();
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					// [START_EXCLUDE]
-					if (errorCode === 'auth/wrong-password') {
-						var warning = "<strong>Invalid!</strong> Password incorrect";
-						setWarning(warning);
-						showWarning();
-					} 
-					else if (errorCode == 'auth/user-not-found'){
-						var warning = "<strong>Invalid!</strong> User not found";
-						setWarning(warning);
-						showWarning();
+    $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {			
+            console.log("Woah we made it this far!");
+            console.log(response);
+            var email = response.email;
+            var password = "Test1234";
+            firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+                db.collection("user").doc(firebase.auth().currentUser.uid).set({
+                    method: "spotify"
+                }).then(function(docRef) {
+                    console.log("Document written with ID: ", firebase.auth().currentUser.uid);
+                    currentPlaylist = firebase.auth().currentUser.uid;
+                    //Add new playlist to user in DB
+                }).catch(function(error) {
+                    console.error("Error adding document: ", error);
+                });
+                hideLoader();
 
-					}else {
-						alert(errorMessage);
-					}
-					console.log(error);
-					return false;
-				});
-			  
-			}).catch(err => { 
-			  if (err.code === 'auth/user-not-found') {
-				// User doesn't exist yet, create it...
-				console.log("User don't exist");
-				
-				firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
-					db.collection("user").doc(firebase.auth().currentUser.uid).set({
-						method: "spotify"
-					}).then(function(docRef) {
-						console.log("Document written with ID: ", firebase.auth().currentUser.uid);
-						currentPlaylist = firebase.auth().currentUser.uid;
-						//Add new playlist to user in DB
-					}).catch(function(error) {
-						console.error("Error adding document: ", error);
-					});
-					hideLoader();
+                return true;
+            }).catch(function(error) {
+                hideLoader();
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode == 'auth/weak-password') {
+                    console.log('Javascript did not pick up this error');
+                } 
+                else if (errorCode == 'auth/email-already-in-use'){
+                    var warning = "<strong>Invalid!</strong> User already exists"
+                    setWarning(warning);
+                    showWarning();
+                }else {
+                    alert(errorMessage);
+                }
+                console.log(error);
+                // [END_EXCLUDE]
+                return false;
+            });
 
-					return true;
-				}).catch(function(error) {
-					hideLoader();
-					// Handle Errors here.
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					// [START_EXCLUDE]
-					if (errorCode == 'auth/weak-password') {
-						console.log('Javascript did not pick up this error');
-					} 
-					else if (errorCode == 'auth/email-already-in-use'){
-						var warning = "<strong>Invalid!</strong> User already exists"
-						setWarning(warning);
-						showWarning();
-					}else {
-						alert(errorMessage);
-					}
-					console.log(error);
-					// [END_EXCLUDE]
-					return false;
-				});
-				
-			}
-			})
-			
-			console.log(response);
-			showLoggedIn();
-		}
-	});
+
+
+            console.log(response);
+            showLoggedIn();
+        }
+    });
 
 
 }
@@ -173,33 +136,7 @@ function getPlaylist(){
     return currentPlaylist;
 }
 
-function choosePlaylist(){
-    var playlist = document.getElementById("choose-playlist-input");
-    var text = playlist.value;
-    console.log("choosing playlist");
 
-    if(text != null){
-        var docRef = db.collection("playlist").doc(text);
-
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                currentPlaylist = doc.id;
-                document.cookie = doc.id;
-
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-    }
-    else{
-        console.log("Text was Null")
-    }
-
-
-}
 function populatePlaylist(){
     if (document.cookie != null){
         var docRef = db.collection("playlist").doc(currentPlaylist);
@@ -209,6 +146,34 @@ function populatePlaylist(){
                 console.log("Document data:", doc.data());
                 console.log(doc.data().creatorID);
                 console.log(doc.data().name);
+
+                var songs = doc.data().songs;
+                if (songs != null){
+                    var size = Object.keys(songs).length;
+                    
+                    console.log("size: " + size);
+
+
+                    for (var i = 0; i<size;i++){
+
+                        var newElement = document.createElement('option');
+
+                        newElement.id = "playlist-item"+i; 
+                        newElement.className = "playlist-item";
+                        if(i%2 == 0){
+                            newElement.setAttribute("style", "background: #DADADA;");
+                        }
+                        document.getElementById("playlist-items").appendChild(newElement);
+                        var source = document.getElementById('song-template2').innerHTML;
+                        var template = Handlebars.compile(source);
+                        var placeholder = document.getElementById('playlist-item'+i);
+
+                        placeholder.innerHTML = template(songs[i]);
+
+                        console.log("Printed song: "+songs[i].name);
+
+                    }
+                }
 
             } else {
                 // doc.data() will be undefined in this case
@@ -222,9 +187,49 @@ function populatePlaylist(){
         console.log("Playlist does not exist");
     }
 }
-function createPlaylist(){
+
+function addSong(){
     
-    var returnVal = false;
+    
+    
+}
+
+function choosePlaylist(){
+    var playlist = document.getElementById("choose-playlist-input");
+    var text = playlist.value;
+    console.log("choosing playlist");
+
+    if(text != null){
+        var docRef = db.collection("playlist").doc(text);
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                currentPlaylist = doc.id;
+                document.cookie = doc.id;
+                populatePlaylist();
+                showSearchBefore();
+
+                return true;
+
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+                return false;
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+            return false
+        });
+    }
+    else{
+        console.log("Text was Null")
+        return false;
+    }
+
+
+}
+
+function createPlaylist(){
 
     var playlist = document.getElementById("create-playlist-name");
 
@@ -244,23 +249,23 @@ function createPlaylist(){
             playlistID: currentPlaylist
         }).then(function() {
             console.log("User saved as:"+firebase.auth().currentUser.uid);
-            
-            
-            
-            returnVal = true;
+            populatePlaylist();
+            showSearchBefore();
+
+
+            return true;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
-            returnVal = false;
+            return false;
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
-        returnVal = false;
+        return false;
     });
-    
-    return returnVal;
+
 
 
 }

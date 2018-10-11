@@ -36,20 +36,25 @@ document.getElementById("signupBtn").addEventListener("click", function(){
 });
 
 
-document.getElementById('create-playlist').addEventListener('click', function(){
+document.getElementById('showCreatePlaylist').addEventListener('click', function(){
     if(getUserStatus){
         showCreatePlaylist();
-
     }
 }, false);
 
 document.getElementById("choose-playlist-button").addEventListener("click", function(){
     if(getUserStatus){
         choosePlaylist();
-        showSearchBefore();
     }
 
 });
+document.getElementById("create-playlist-btn").addEventListener("click", function(){
+    if(getUserStatus){
+        createPlaylist();
+    }
+
+});
+
 
 document.getElementById('back-to-search-btn').addEventListener('click', function() {
     if(getUserStatus){
@@ -66,18 +71,14 @@ document.getElementById('search-button').addEventListener('click', function() {
 
 });
 
+
 document.getElementById("showCreatePlaylist").addEventListener("click", function(){
     if(getUserStatus){
         showCreatePlaylist();
     }
 
 });
-document.getElementById("create-playlist-btn").addEventListener("click", function(){
-    if(getUserStatus){
-        createPlaylist();
-    }
 
-});
 
 document.getElementById("signout").addEventListener("click", function(){
     if(getUserStatus){
