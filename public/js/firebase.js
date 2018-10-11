@@ -10,21 +10,28 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.firestore();
+var currentPlaylist;
+
 
 firebase.auth().onAuthStateChanged(function(user) {
-    console.log("State Changed");
-    if(user && checkAccess()){
-        showLoggedIn();
-    }else if(user){
-        console.log("Not logged in");
+    if(checkAccess){
+
+        if(user){
+            console.log("Logged in");
+            showLoggedIn();
+        }
+        else{
+            console.log("Not logged in");
+            showInitial();
+        }
     }
-    else {
-        showInitial();
+    else{
+        document.location.href ="/login";
     }
 });
 
 function getUserStatus(){
-    if (user){
+    if (firebase.auth().user){
         return true;
     }
     else{
@@ -35,23 +42,23 @@ function getUserStatus(){
 var provider = new firebase.auth.GoogleAuthProvider();
 
 function googLogin(){
-	firebase.auth().signInWithPopup(provider).then(function(result) {
-		// This gives you a Google Access Token. You can use it to access the Google API.
-		var token = result.credential.accessToken;
-		// The signed-in user info.
-		var user = result.user;
-		// ...
-		console.log(user.uid);
-	}).catch(function(error) {
-		// Handle Errors here.
-		var errorCode = error.code;
-		var errorMessage = error.message;
-		// The email of the user's account used.
-		var email = error.email;
-		// The firebase.auth.AuthCredential type that was used.
-		var credential = error.credential;
-		// ...
-	});
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        // ...
+        console.log(user.uid);
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+    });
 }
 
 
@@ -65,7 +72,6 @@ function signout(){
     });
 }
 
-var currentPlaylist;
 
 function getPlaylist(){
     return currentPlaylist;
@@ -80,7 +86,7 @@ function choosePlaylist(){
 
     docRef.get().then(function(doc) {
         if (doc.exists) {
-            currentPlaylist = text;
+            currentPlaylist = doc.id;
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -96,31 +102,51 @@ function createPlaylist(){
 
     var text = playlist.value;
     console.log("adding playlist");
-    console.log(firebase.auth().currentUser.uid);
 
     db.collection("playlist").add({
-
         //Add current user here
         creatorID: firebase.auth().currentUser.uid,
         name: text
     }).then(function(docRef) {
         currentPlaylist = docRef.id;
-        console.log("Document written with ID: ", currentPlaylist);
-
+        console.log("Playlist saved as:"+docRef.id);
         db.collection("user").doc(firebase.auth().currentUser.uid).set({
             playlistID: currentPlaylist
-        }).then(function(docRef2) {
-            console.log("Document written with ID: ", firebase.auth().currentUser.uid);
+        }).then(function() {
+            console.log("User saved as:"+firebase.auth().currentUser.uid);
+            return true;
             //Add new playlist to user in DB
         }).catch(function(error) {
             console.error("Error adding document: ", error);
+            return false;
         });
 
         //Add new playlist to user in DB
     }).catch(function(error) {
         console.error("Error adding document: ", error);
+        return false;
     });
 
+}
+
+function populatePlaylist(){
+    if (currentPlaylist != null){
+        var docRef = db.collection("playlist").doc(currentPlaylist);
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log("Document data:", doc.data());
+                console.log(doc.data().creatorID);
+                console.log(doc.data().name);
+                
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
 }
 
 function logIn() {
@@ -140,7 +166,7 @@ function logIn() {
         showWarning();
         return false;
     }
-	
+
     if (password.length < 8) {
         var warning = "<strong>Invalid!</strong> Please enter a valid password.";
         setWarning(warning);
