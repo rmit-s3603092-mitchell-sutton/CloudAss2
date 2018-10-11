@@ -135,6 +135,12 @@ function getPlaylist(){
     return currentPlaylist;
 }
 
+var loadedSongs;
+
+function getLoadedSongs(){
+    return loadedSongs;
+}
+
 
 function populatePlaylist(){
     if (document.cookie != null){
@@ -152,9 +158,9 @@ function populatePlaylist(){
                 console.log(doc.data().creatorID);
                 console.log(doc.data().name);
 
-                var songs = doc.data().songs;
-				
-                if (songs != null){
+                loadedSongs = doc.data().songs;
+
+                if (loadedSongs != null){
                     var size = Object.keys(songs).length;
 
                     console.log("size: " + size);
@@ -174,9 +180,9 @@ function populatePlaylist(){
                         var template = Handlebars.compile(source);
                         var placeholder = document.getElementById('playlist-item'+i);
 
-                        placeholder.innerHTML = template(songs[i]);
+                        placeholder.innerHTML = template(loadedSongs[i]);
 
-                        console.log("Printed song: "+songs[i].name);
+                        console.log("Printed song: "+loadedSongs[i].name);
 
                     }
                 }
@@ -196,6 +202,62 @@ function populatePlaylist(){
 
 function addSong(){
 
+    var select = document.getElementById("playlist-items");
+    var currentInd = select.selectedIndex;
+
+    var docRef = db.collection("playlist").doc(currentPlaylist);
+    docRef.get().then(function(doc) {
+        if (doc.exists) {
+
+            console.log("test ended up here, EXISTS");
+            var songs = doc.songs;
+            var currentSong = songs[currentInd];
+            
+            var id = currentSong.id;
+            var name = currentSong.name;
+            var artist = currentSong.artist;
+            
+            db.collection("playlist").doc(currentPlaylist);
+            docRef.set({
+                songs: [{
+                    id: id,
+                    name: name,
+                    artist: artist
+                }]
+            },{ merge: true }).then(function(doc){
+                console.log("was able to set current song");
+                populatePlaylist();
+
+            }).catch(function(error){
+                console.log("Adding song did not work");
+            });
+
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
+
+
+
+
+    console.log("CurrentInd = "+currentInd + ", currentSong = "+ currentSong);
+
+    loadedSongs.push(currentSong);
+
+    var docRef = db.collection("playlist").doc(currentPlaylist);
+    docRef.update({
+        songs: loadedSongs
+    }).then(function(doc){
+
+        populatePlaylist();
+
+
+    }).catch(function(error){
+        console.log("Adding song did not work");
+    });
 
 }
 
