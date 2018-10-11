@@ -154,7 +154,7 @@ function populatePlaylist(){
                     console.log("size: " + size);
 
 
-                    for (var i; i<size;i++){
+                    for (var i = 0; i<size;i++){
 
                         var newElement = document.createElement('option');
 
