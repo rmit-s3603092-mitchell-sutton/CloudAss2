@@ -202,14 +202,17 @@ function populatePlaylist(){
 
 function addSong(){
 
-    var select = document.getElementById("playlist-items");
-    var currentInd = select.selectedIndex;
+    var select = document.getElementById("search-items");
     
+    var currentInd = select.selectedIndex;
+
+    console.log(currentInd);
+
 
     console.log("test ended up here, EXISTS");
     var songs = getSearchedSongs();
     var currentSong = songs[currentInd];
-    
+
     console.log(songs);
     console.log(currentSong);
 
